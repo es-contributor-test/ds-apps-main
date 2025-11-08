@@ -1,5 +1,3 @@
-import { motion } from 'framer-motion';
-
 interface TimelineItem {
   timespan: string;
   title: string;
@@ -17,16 +15,8 @@ export default function Timeline({ items }: TimelineProps) {
   return (
     <div className="space-y-4">
       {items.map((item, i) => (
-        <motion.div
+        <div
           key={i}
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ 
-            duration: 0.5, 
-            delay: i * 0.1,
-            ease: "easeOut"
-          }}
           className="flex gap-6 items-center rounded-2xl border border-border bg-primary-foreground px-5 py-3"
         >
           {/* Logo - Simple left side */}
@@ -60,7 +50,7 @@ export default function Timeline({ items }: TimelineProps) {
               </ul>
             )}
           </div>
-        </motion.div>
+        </div>
       ))}
     </div>
   );

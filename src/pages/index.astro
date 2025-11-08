@@ -41,9 +41,9 @@ const allPostsByDate = sortMDByDate(allPosts).slice(0, MAX_POSTS)
 			/>
 
 			<div class='flex flex-col items-center gap-y-4'>
-				<h1 class='text-3xl font-bold'>Lorem ipsum dolor</h1>
+				<h1 class='text-3xl font-bold'>Eeshan S.</h1>
 				<a
-					href='https://github.com/srleom/astro-theme-resume.git'
+					href='/projects/ab-test-simulator'
 					class='flex flex-row items-center gap-x-3 rounded-3xl border border-input px-4 py-2 text-sm shadow-sm transition-all hover:shadow-md'
 				>
 					<span class='relative flex items-center justify-center'>
@@ -53,10 +53,10 @@ const allPostsByDate = sortMDByDate(allPosts).slice(0, MAX_POSTS)
 						<span class='relative inline-flex h-2 w-2 rounded-full bg-green-400'></span>
 					</span>
 
-					<p class='font-medium'>Get free template</p>
+					<p class='font-medium'>Try A/B Test Simulator</p>
 				</a>
 				<div class='flex flex-wrap justify-center gap-x-7 gap-y-3'>
-					<Label title='Lorem Ipsum'>
+					<Label title='Data Science'>
 						<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' class='h-5 w-5' slot='icon'
 							><path
 								fill='currentColor'
@@ -64,7 +64,7 @@ const allPostsByDate = sortMDByDate(allPosts).slice(0, MAX_POSTS)
 							></path></svg
 						>
 					</Label>
-					<Label title='Ipsum'>
+					<Label title='A/B Testing'>
 						<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' class='h-5 w-5' slot='icon'
 							><path
 								fill='currentColor'
@@ -73,9 +73,9 @@ const allPostsByDate = sortMDByDate(allPosts).slice(0, MAX_POSTS)
 						>
 					</Label>
 					<Label
-						title='Connect on Linkedin'
+						title='Connect on LinkedIn'
 						as='a'
-						href='https://www.linkedin.com/in/example/'
+						href='https://www.linkedin.com/in/eeshan-srivastava/'
 						target='_blank'
 					>
 						<svg
@@ -95,10 +95,9 @@ const allPostsByDate = sortMDByDate(allPosts).slice(0, MAX_POSTS)
 
 		<Section title='About'>
 			<p class='text-muted-foreground'>
-				Lorem ipsum dolor sit amet consectetur adipisicing elit. Reiciendis atque quia omnis
-				consectetur, voluptas praesentium veniam blanditiis ratione asperiores accusantium laborum
-				odit commodi quis deserunt incidunt et dolor iure ut! Lorem ipsum dolor sit, amet
-				consectetur adipisicing elit. Alias quia, doloribus ut beatae perspiciatis voluptatibus.
+				Data science leader with 8+ years of experience in experimentation, analytics, and product development. 
+				Currently leading data science initiatives at Starbucks, focusing on customer behavior modeling and A/B testing at scale. 
+				Passionate about building data-driven products that drive measurable business impact through rigorous statistical analysis and modern data stacks.
 			</p>
 		</Section>
 		{
@@ -122,19 +121,20 @@ const allPostsByDate = sortMDByDate(allPosts).slice(0, MAX_POSTS)
 		<Section title='Projects'>
 			<div class='flex flex-col gap-y-3 sm:flex-row sm:gap-x-3 sm:gap-y-0'>
 				<ProjectCard
-					href='https://www.google.com'
-					heading='Consectetur'
-					subheading='Lorem ipsum dolor sit amet consectetur adipisicing elit.'
+					href='/projects/ab-test-simulator'
+					heading='A/B Test Simulator'
+					subheading='Interactive word search puzzle with PostHog experiments and real-time analytics'
 					imagePath='/src/assets/coming-soon.png'
-					altText='Example'
+					altText='A/B Test Simulator'
 					class='w-full sm:w-1/2'
 				/>
 				<ProjectCard
-					as='div'
-					heading='Coming soon...'
-					subheading=''
+					as='a'
+					href='/projects'
+					heading='View All Projects'
+					subheading='Explore data science projects, tools, and implementations'
 					imagePath='/src/assets/coming-soon.png'
-					altText='Lorem, ipsum dolor sit'
+					altText='All Projects'
 					class='w-full sm:w-1/2'
 				/>
 			</div>
