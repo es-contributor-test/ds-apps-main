@@ -29,64 +29,50 @@ let puzzleState = {
 };
 
 document.addEventListener('DOMContentLoaded', () => {
-  // Wait for PostHog to be ready, then initialize with feature flags
-  if (window.posthog && posthog.onFeatureFlags) {
-    // PostHog is available, wait for feature flags
-    posthog.onFeatureFlags(() => {
-      initializeVariant();
-      displayVariant();
-      setupPuzzle();
-      updateLeaderboard();
-    });
-  } else {
-    // Wait for PostHog to load
-    let attempts = 0;
-    const waitForPostHog = () => {
-      if (window.posthog && posthog.onFeatureFlags) {
-        posthog.onFeatureFlags(() => {
-          initializeVariant();
-          displayVariant();
-          setupPuzzle();
-          updateLeaderboard();
-        });
-      } else if (attempts++ < 30) {
-        setTimeout(waitForPostHog, 100);
-      } else {
-        // PostHog didn't load, show error
-        showFeatureFlagError();
-      }
-    };
-    waitForPostHog();
+  // Wait for PostHog feature flags to load before initializing
+  let hasInitialized = false;
+  
+  function doInit() {
+    if (hasInitialized) return;
+    hasInitialized = true;
+    initializeVariant();
+    displayVariant();
+    setupPuzzle();
+    updateLeaderboard();
   }
+  
+  // Try PostHog callback first
+  if (posthog && posthog.onFeatureFlags) {
+    posthog.onFeatureFlags(doInit);
+  }
+  
+  // Timeout fallback - if PostHog doesn't fire callback in 1 second, initialize anyway
+  setTimeout(doInit, 1000);
 });
 
 const initializeVariant = () => {
-  // This function is called only AFTER onFeatureFlags callback fires
-  // So we can safely get the feature flag without race conditions
-  const flag = posthog.getFeatureFlag(FEATURE_FLAG_KEY);
-  
-  if (!flag) {
-    // Feature flag didn't return a value, show error
-    showFeatureFlagError();
-    return;
-  }
-  
+  // Get variant from PostHog feature flag
+  const posthogVariant = posthog.getFeatureFlag(FEATURE_FLAG_KEY);
+
   let variant;
-  if (flag === '4-words') {
+  if (posthogVariant === '4-words') {
     variant = 'B';  // 4 words = Variant B
-  } else if (flag === 'control') {
+  } else if (posthogVariant === 'control') {
     variant = 'A';  // control = Variant A (3 words)
   } else {
-    // Unexpected feature flag value
-    console.warn('Unexpected feature flag value:', flag);
-    showFeatureFlagError();
-    return;
+    // Fallback if feature flag didn't load
+    variant = Math.random() < 0.5 ? 'A' : 'B';
+    console.warn('PostHog feature flag not loaded, using random assignment. Got:', posthogVariant);
   }
-  
+
   localStorage.setItem('simulator_variant', variant);
-  localStorage.setItem('simulator_user_id', 'user_' + Math.random().toString(36).substr(2, 9));
+
+  const userId = 'user_' + Math.random().toString(36).substr(2, 9);
+  localStorage.setItem('simulator_user_id', userId);
+
   if (!localStorage.getItem('simulator_username')) {
-    localStorage.setItem('simulator_username', generateUsername());
+    const username = generateUsername();
+    localStorage.setItem('simulator_username', username);
   }
 };
 
