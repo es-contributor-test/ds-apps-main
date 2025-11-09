@@ -47,22 +47,20 @@ import PageLayout from '../../layouts/BaseLayout.astro'
 				<!-- CENTER: Controls & Info (1/3) -->
 				<div class="space-y-4">
 					<!-- Timer + Try Again Button (always visible, changes state) -->
-					<div class="grid grid-cols-2 gap-2">
-						<!-- Timer -->
-						<div class="flex flex-col items-center justify-center rounded-lg bg-muted p-4">
-							<div class="text-xs text-muted-foreground mb-1">Time</div>
-							<div id="timer" class="font-mono text-2xl font-bold">00:60:00</div>
-						</div>
-
+					<div class="flex flex-col gap-1">
 						<!-- Action Button (Start / Try Again / Reset) -->
-						<div id="controls" class="flex flex-col gap-2">
+						<div id="controls" class="flex flex-row gap-2">
 							<button id="start-button" class="flex-1 rounded-lg bg-primary px-3 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors">Start</button>
 							<button id="reset-button" class="hidden flex-1 rounded-lg bg-secondary px-3 py-2 text-sm font-medium text-secondary-foreground hover:bg-secondary/80 transition-colors">Stop</button>
 							<button id="try-again-inline-button" class="hidden flex-1 rounded-lg bg-orange-600 px-3 py-2 text-sm font-medium text-white hover:bg-orange-700 transition-colors">Try Again</button>
 						</div>
-					</div>
-
-					<!-- Input Box (hidden until started) -->
+						
+						<!-- Timer -->
+						<div class="grid grid-cols-3 items-center rounded-lg bg-muted p-4">
+							<div class="text-xs text-muted-foreground">Time</div>
+							<div id="timer" class="font-mono text-2xl font-bold col-span-2">00:60:00</div>
+						</div>
+					</div>					<!-- Input Box (hidden until started) -->
 					<div id="input-section" class="hidden space-y-2">
 						<label for="word-input" class="text-xs font-medium text-muted-foreground">Enter Word</label>
 						<input type="text" id="word-input" placeholder="Type a word..." autocomplete="off" class="w-full rounded-lg border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary">
@@ -129,11 +127,53 @@ import PageLayout from '../../layouts/BaseLayout.astro'
 			</div>
 
 			<!-- Comparison Card (High Priority) -->
-			<div id="comparison-card" class="rounded-lg border bg-gradient-to-br from-card to-muted p-6">
-				<div class="flex items-center justify-center h-24">
-					<div class="text-center">
-						<div class="h-6 w-6 border-2 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
-						<div class="text-sm text-muted-foreground">Loading comparison...</div>
+			<div class="rounded-xl border bg-card p-6">
+				<div class="grid grid-cols-3 gap-6">
+					<!-- Variant A -->
+					<div class="space-y-3">
+						<div class="flex items-center gap-2">
+							<div class="flex items-center justify-center w-6 h-6 rounded bg-indigo-500 text-white text-xs font-bold">A</div>
+							<div class="text-sm font-semibold">Control (3 words)</div>
+						</div>
+						<div>
+							<div class="text-xs text-muted-foreground">Total Completions</div>
+							<div id="variant-a-count" class="text-2xl font-bold">--</div>
+						</div>
+						<div>
+							<div class="text-xs text-muted-foreground">Avg Completion Time</div>
+							<div id="variant-a-time" class="font-mono text-2xl font-bold">--</div>
+						</div>
+					</div>
+
+					<!-- Variant B -->
+					<div class="space-y-3">
+						<div class="flex items-center gap-2">
+							<div class="flex items-center justify-center w-6 h-6 rounded bg-red-500 text-white text-xs font-bold">B</div>
+							<div class="text-sm font-semibold">Variant (4 words)</div>
+						</div>
+						<div>
+							<div class="text-xs text-muted-foreground">Total Completions</div>
+							<div id="variant-b-count" class="text-2xl font-bold">--</div>
+						</div>
+						<div>
+							<div class="text-xs text-muted-foreground">Avg Completion Time</div>
+							<div id="variant-b-time" class="font-mono text-2xl font-bold">--</div>
+						</div>
+					</div>
+
+					<!-- Comparison -->
+					<div class="space-y-3">
+						<div class="flex items-center gap-2">
+							<div class="text-xl">⚖️</div>
+							<div class="text-sm font-semibold">Comparison</div>
+						</div>
+						<div>
+							<div class="text-xs text-muted-foreground">Time Difference</div>
+							<div id="comparison-diff" class="font-mono text-2xl font-bold text-muted-foreground">--%</div>
+						</div>
+						<div id="comparison-status-box" class="hidden rounded-lg p-3">
+							<div id="comparison-status" class="text-sm font-medium">--</div>
+						</div>
 					</div>
 				</div>
 			</div>
