@@ -23,5 +23,5 @@ pnpm-debug.log*
 .vercel
 
 # secret / not to publish files
-supabase-schema.sql
-PROJECT_HISTORY.md
+#supabase-schema.sql
+#PROJECT_HISTORY.md

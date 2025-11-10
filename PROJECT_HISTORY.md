@@ -8,6 +8,8 @@
 
 Please read through project_history.md in extreme detail so you understand where I am right now .. pay attention to working principles. Explore the codebase of soma-portfolio and soma-analytics repos so you understand the code in context of my project history doc. Let me know once you have perfect understand of my code and work. 
 
+go through the js files to see if there are any redundancies, dead code or opportunities to optimize without breaking anything and then give me a plan (don't do anything)
+
 1. Read the "Working Principles" section above (defines how you think)
 2. Check the "Tech Stack & Architecture" section (current state)
 3. Understand the three repos: Hugo (archived), Streamlit (still running), Astro (current)
@@ -362,3 +364,75 @@ localStorage.clear(); posthog.reset(); location.reload();
 ```
 
 ---
+
+## Temporary Recommendations (Nov 10, 2025)
+
+Documenting concrete, low-risk improvements to consider next. No code changes made yet—this is a review checklist for tomorrow.
+
+1) Performance and Network
+- Coalesce API calls: Merge `/api/variant-stats` and `/api/comparison` (comparison derives from stats). Expected: -1 HTTP request per 5s refresh (≈12/hr/user); risk: low.
+- FastAPI CORS lockdown: Restrict `allow_origins` to `https://eeshans.com` and localhost (keep dev smooth). Risk: low.
+- Dashboard dev host check: Expand localhost detection to include `127.0.0.1` and local IPs (e.g., `hostname.startsWith('192.168.')`). Risk: low.
+- Supabase indexes (DB side): Ensure indexes on `(event, variant)`, and on `properties->>'username'` for leaderboard MIN/COUNT query. Risk: low, ops task.
+
+2) UX polish and copy consistency
+- Comparison labels: In `src/pages/projects/ab-test-simulator.astro`, the comparison card still references “3 words / 4 words”. Update to pineapple counts or neutral labels (e.g., “Control (A)” / “Treatment (B)”). Risk: low.
+- Found items label: `found-words-list` now displays pineapples. Rename to `found-pineapples` for clarity (JS + HTML). Risk: low.
+- Feature flag naming: Consider renaming `word_search_difficulty_v2` to a memory-game-specific flag for clarity once data collection is stable. Risk: low.
+
+3) JS audit: redundancies, dead code, and micro-optimizations
+- Duplicate IDs (bug): `ab-test-simulator.astro` declares two elements with id `try-again-inline-button` (one in controls row, one in result card). Use unique IDs or a class selector, and update listeners in `ab-simulator.js`. Risk: low.
+- Dead/legacy state in `ab-simulator.js`:
+   - `guessedWords`, `foundWords`, and `updateFoundWordsList()` are remnants from word-search; no longer used in the memory game flow. Candidate for removal.
+   - `memorizeTime: 5000` is defined in state but not used; memorize step is hard-coded with `setTimeout(2000)` + a 5s countdown. Either wire `memorizeTime` into the flow or remove it.
+   - `input-section` and `word-input` remain in the DOM but are hidden and unused—carryover from the old mechanic. Safe to delete with corresponding JS.
+- Error UI target mismatch in `dashboard.js`: error path updates `#comparison-card`, but this element ID doesn’t exist in the page DOM. Either add a wrapper with this ID or switch to an existing container. Risk: low.
+- Timer render cadence: Consider using `requestAnimationFrame` (or a 250ms interval) for display updates; keep the underlying timing via `Date.now()` for accuracy. Risk: low.
+- Small utilities: Deduplicate DOM helpers (`$, show, hide, toggle`) for reuse between `ab-simulator.js` and `dashboard.js` via a tiny shared `public/js/utils.js`. Expected JS LOC reduction: ~20–40 lines (≈3–4%). Risk: low.
+- Leaderboard flicker: Cache the user’s personal best in `localStorage` and render immediately while awaiting API; then reconcile with server response. Risk: low.
+
+4) Reliability and resilience
+- Feature flag retry: Before declaring a PostHog flag failure, retry once after ~500ms; if still unresolved, show the current helpful error block. Risk: low.
+- API input validation: `/api/recent-completions` clamps `limit` (good). Mirror explicit min bound (e.g., floor to 1) for completeness. Risk: low.
+
+5) Analytics depth (optional nicety)
+- Percentiles endpoint: Add `/api/leaderboard-stats` or enrich existing stats with p50/p90 completion times per variant using current views. Useful for dashboard narrative without heavy UI changes. Risk: low.
+
+Estimated impact summary
+- Network: fewer requests (coalesced stats) and tighter CORS
+- JS hygiene: -50 to -100 LOC across `public/js` from dead code and utility extraction (≈6–10% within that folder), reduced confusion surface
+- UX clarity: consistent copy and IDs prevent rare bugs
+
+If you want, I can start with the JS audit cleanups first (dead code removal, duplicate ID fix, feature flag retry). That’s the safest set with immediate LOC and clarity wins.
+
+
+## AI Resumption Prompt (for tomorrow)
+
+Copy-paste this prompt to rehydrate full context and continue seamlessly:
+
+```
+You are assisting on the SOMA Portfolio/Analytics project. Rehydrate context and regain full working memory, then wait for my instruction on which task to execute:
+
+1) Read /Users/eeshans/dev/soma-portfolio/PROJECT_HISTORY.md end-to-end.
+   - Memorize the Working Principles, Tech Stack & Architecture, and the section "Temporary Recommendations (Nov 10, 2025)".
+
+2) Confirm key files and roles without editing any code yet:
+   - soma-portfolio: astro.config.mjs, package.json, tailwind.config.js, tsconfig.json,
+     src/pages/index.astro, src/pages/projects/ab-test-simulator.astro,
+     src/components/BaseHead.astro,
+     public/js/ab-simulator.js, public/js/puzzle-config.js, public/js/dashboard.js,
+     src/data/social-links.yaml
+   - soma-analytics: api.py, analysis/ab_test.py, requirements.txt, Dockerfile, fly.toml
+
+3) Summarize (briefly) the current architecture and experiment pipeline, then restate the "Temporary Recommendations" as a prioritized checklist. Note any deltas since last run if files have changed.
+
+4) When I say "proceed", start with the JS audit items unless I specify otherwise:
+   - Fix duplicate IDs (try-again button)
+   - Remove dead/legacy code (guessedWords/foundWords/updateFoundWordsList, unused input box, unused memorizeTime constant)
+   - Add a single feature-flag retry before erroring
+   - Optional: extract small DOM utils to public/js/utils.js
+   Provide an estimated LOC reduction and how you’ll validate (build + quick manual test steps).
+
+Do not make any code changes until I confirm the first task to execute.
+```
+
