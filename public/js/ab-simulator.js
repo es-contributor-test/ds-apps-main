@@ -348,8 +348,8 @@ const endChallenge = async (success) => {
   }
   
   trackEvent(success ? 'puzzle_completed' : 'puzzle_failed', { 
-    // Ensure numeric type for downstream analytics (avoid string via toFixed)
-    completion_time_seconds: success ? Math.round((puzzleState.completionTime) / 1) / 1000 : undefined,
+      // Ensure numeric type for analytics (not string)
+      completion_time_seconds: success ? Number((puzzleState.completionTime / 1000).toFixed(3)) : undefined,
     correct_words_count: puzzleState.foundPineapples.length, // Track pineapples found
     total_guesses_count: puzzleState.totalClicks // Track total clicks
   });
