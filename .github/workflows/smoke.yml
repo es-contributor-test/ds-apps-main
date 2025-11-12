@@ -9,8 +9,9 @@ jobs:
   smoke:
     runs-on: ubuntu-latest
     env:
-      SUPABASE_URL: ${{ secrets.PUBLIC_SUPABASE_URL }}
-      SUPABASE_ANON_KEY: ${{ secrets.PUBLIC_SUPABASE_ANON_KEY }}
+      # Prefer secrets; fall back to repo-level variables if secrets are not defined
+      SUPABASE_URL: ${{ secrets.PUBLIC_SUPABASE_URL || vars.PUBLIC_SUPABASE_URL }}
+      SUPABASE_ANON_KEY: ${{ secrets.PUBLIC_SUPABASE_ANON_KEY || vars.PUBLIC_SUPABASE_ANON_KEY }}
     steps:
       - name: Validate env
         run: |
