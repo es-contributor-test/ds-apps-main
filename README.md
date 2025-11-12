@@ -77,3 +77,40 @@ To add images in blog articles, insert a folder in the `src/content/` directory,
 To change the theme colours of the site, edit the `src/styles/app.css` file.
 
 To change the fonts of the site, add your font files into `/public`, add it as a `@font-face` in the `src/styles/app.css` file, as a `fontFamily` in the `tailwind.config.js` file, and apply the new font class to the `body` tag in the `src/layouts/BaseLayout.astro` file.
+
+## Operations (Supabase + Deploy)
+
+### Rotate PUBLIC_* keys
+
+- Update local `.env` with new values:
+    - `PUBLIC_SUPABASE_URL`
+    - `PUBLIC_SUPABASE_ANON_KEY`
+- For production deploys on Fly.io, provide these at build time (safe to expose, they’re public):
+    - via `fly.toml` under `[build.args]`, or
+    - via deploy flags: `fly deploy --build-arg PUBLIC_SUPABASE_URL=... --build-arg PUBLIC_SUPABASE_ANON_KEY=...`
+- Update GitHub repository settings for smoke checks:
+    - Settings → Secrets and variables → Actions
+    - Add secrets (or variables) with the same two names so `.github/workflows/smoke.yml` can run.
+
+### Redeploy
+
+1) Commit changes
+2) `fly deploy` (or let GitHub Actions run `.github/workflows/deploy.yml` on push to main)
+
+### Monitoring (Smoke checks)
+
+- Workflow `.github/workflows/smoke.yml` runs every 30 minutes and on-demand.
+- It calls these endpoints on Supabase PostgREST:
+    - `rpc/variant_overview`
+    - `rpc/recent_completions`
+    - `rpc/completion_time_distribution`
+    - `v_conversion_funnel`
+- Configure repository secrets or variables:
+    - `PUBLIC_SUPABASE_URL`
+    - `PUBLIC_SUPABASE_ANON_KEY`
+
+### Performance notes (optional)
+
+- Current SQL includes targeted indexes for common filters and aggregations.
+- If distribution queries grow heavy, consider a materialized view and refresh with `pg_cron`.
+- Frontend scripts on the simulator page are inlined (`is:inline`), so cache-busting isn’t required for those assets.
