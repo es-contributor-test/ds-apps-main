@@ -7,9 +7,15 @@ WORKDIR /app
 ARG PUBLIC_POSTHOG_KEY
 ARG PUBLIC_POSTHOG_HOST
 
+# Accept build arguments for Supabase PostgREST access (PUBLIC_* are safe to expose)
+ARG PUBLIC_SUPABASE_URL
+ARG PUBLIC_SUPABASE_ANON_KEY
+
 # Make them available as env vars during build
 ENV PUBLIC_POSTHOG_KEY=$PUBLIC_POSTHOG_KEY
 ENV PUBLIC_POSTHOG_HOST=$PUBLIC_POSTHOG_HOST
+ENV PUBLIC_SUPABASE_URL=$PUBLIC_SUPABASE_URL
+ENV PUBLIC_SUPABASE_ANON_KEY=$PUBLIC_SUPABASE_ANON_KEY
 
 # Copy package files
 COPY package.json package-lock.json* pnpm-lock.yaml* ./
