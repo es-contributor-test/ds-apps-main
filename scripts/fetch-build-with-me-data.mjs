@@ -19,9 +19,9 @@ const REPO_NAME = process.env.GITHUB_REPO_NAME || 'soma-portfolio'
 const OUTPUT_PATH = path.join(process.cwd(), 'src', 'data', 'build-with-me-data.json')
 
 if (!GITHUB_TOKEN) {
-	console.error('❌ ERROR: GITHUB_TOKEN required. Set in .env file.')
-	console.error('   Example: GITHUB_TOKEN=ghp_xxxxxxxxxxxxxxxxxxxx')
-	process.exit(1)
+	console.warn('⚠️  GITHUB_TOKEN not set - skipping Build With Me data fetch')
+	console.warn('   Using existing data from src/data/build-with-me-data.json')
+	process.exit(0)
 }
 
 const headers = {
