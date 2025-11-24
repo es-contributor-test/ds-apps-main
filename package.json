@@ -33,7 +33,7 @@
 		"dotenv": "^17.2.3",
 		"js-yaml": "^4.1.0",
 		"mdast-util-to-string": "^4.0.0",
-		"posthog-js": "^1.289.0",
+		"posthog-js": "^1.298.0",
 		"react": "^19.2.0",
 		"react-dom": "^19.2.0",
 		"react-grab": "^0.0.49",
