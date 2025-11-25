@@ -3,8 +3,7 @@ import type { Task, Contributor } from './validate-build-with-me'
 import {
 	LABEL_CATEGORY_MAP,
 	LABEL_DIFFICULTY_MAP,
-	LABEL_PROJECT_MAP,
-	POINTS_PREFIX
+	LABEL_PROJECT_MAP
 } from '../data/build-with-me-config'
 
 const REPO_OWNER = 'eeshansrivastava89'
@@ -66,7 +65,6 @@ function mapLabels(labels: { name: string }[]) {
 	const cats = new Set<string>()
 	const skills: string[] = []
 	let difficulty: string | undefined
-	let points: number | undefined
 	let projectSlug = 'ab-sim'
 	let estimatedHours: string | undefined
 	let isGoodFirstIssue = false
@@ -76,16 +74,12 @@ function mapLabels(labels: { name: string }[]) {
 		if (LABEL_CATEGORY_MAP[name]) cats.add(LABEL_CATEGORY_MAP[name])
 		if (LABEL_DIFFICULTY_MAP[name]) difficulty = LABEL_DIFFICULTY_MAP[name]
 		if (LABEL_PROJECT_MAP[name]) projectSlug = LABEL_PROJECT_MAP[name]
-		if (name.startsWith(POINTS_PREFIX)) {
-			const val = parseInt(name.replace(POINTS_PREFIX, ''), 10)
-			if (!Number.isNaN(val)) points = val
-		}
 		if (name.startsWith('learn:')) skills.push(name.replace('learn:', ''))
 		if (name.startsWith('hours:')) estimatedHours = name.replace('hours:', '')
 		if (name === 'good first issue') isGoodFirstIssue = true
 	}
 
-	return { category: Array.from(cats), difficulty, points, projectSlug, skills, estimatedHours, isGoodFirstIssue }
+	return { category: Array.from(cats), difficulty, projectSlug, skills, estimatedHours, isGoodFirstIssue }
 }
 
 function mapStatus(issue: GitHubIssue, prIndex: Map<number, GitHubPR>): string {
@@ -105,7 +99,7 @@ function buildTasks(issues: GitHubIssue[], prs: GitHubPR[]): Task[] {
 	prs.forEach((pr) => prIndex.set(pr.number, pr))
 
 	return issues.map((issue) => {
-		const { category, difficulty, points, projectSlug, skills, estimatedHours, isGoodFirstIssue } = mapLabels(issue.labels)
+		const { category, difficulty, projectSlug, skills, estimatedHours, isGoodFirstIssue } = mapLabels(issue.labels)
 		const status = mapStatus(issue, prIndex)
 		const assignees = issue.assignee
 			? [{ name: issue.assignee.login, avatarUrl: issue.assignee.avatar_url }]
@@ -121,7 +115,6 @@ function buildTasks(issues: GitHubIssue[], prs: GitHubPR[]): Task[] {
 			category: category.length ? category : ['frontend'],
 			status,
 			difficulty,
-			points,
 			assignees,
 			closedBy,
 			labels: issue.labels.map((l) => l.name).filter(Boolean),

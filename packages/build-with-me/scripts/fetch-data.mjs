@@ -7,7 +7,6 @@ import {
 	LABEL_CATEGORY_MAP,
 	LABEL_DIFFICULTY_MAP,
 	LABEL_PROJECT_MAP,
-	POINTS_PREFIX,
 	getProjectName
 } from '../src/data/build-with-me-config.js'
 
@@ -66,11 +65,77 @@ const fetchAllPRs = async () => {
 	return prs
 }
 
+// Fetch project item dates via GraphQL
+const fetchProjectDates = async () => {
+	const query = `
+		query {
+			user(login: "${REPO_OWNER}") {
+				projectV2(number: 1) {
+					items(first: 100) {
+						nodes {
+							content {
+								... on Issue { number }
+							}
+							fieldValues(first: 10) {
+								nodes {
+									... on ProjectV2ItemFieldDateValue {
+										date
+										field { ... on ProjectV2FieldCommon { name } }
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	`
+	
+	try {
+		const res = await fetch('https://api.github.com/graphql', {
+			method: 'POST',
+			headers: {
+				...headers,
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({ query })
+		})
+		
+		if (!res.ok) {
+			console.warn('⚠️  Could not fetch project dates (may need project scope)')
+			return new Map()
+		}
+		
+		const data = await res.json()
+		const dateMap = new Map()
+		
+		const items = data?.data?.user?.projectV2?.items?.nodes || []
+		for (const item of items) {
+			const issueNumber = item.content?.number
+			if (!issueNumber) continue
+			
+			const dates = { startDate: null, targetDate: null }
+			for (const fieldValue of item.fieldValues?.nodes || []) {
+				if (fieldValue?.field?.name === 'Start date') {
+					dates.startDate = fieldValue.date
+				} else if (fieldValue?.field?.name === 'Target date') {
+					dates.targetDate = fieldValue.date
+				}
+			}
+			dateMap.set(issueNumber, dates)
+		}
+		
+		return dateMap
+	} catch (err) {
+		console.warn('⚠️  GraphQL fetch failed:', err.message)
+		return new Map()
+	}
+}
+
 const mapLabels = (labels) => {
 	const cats = new Set()
 	const skills = []
 	let difficulty
-	let points
 	let projectSlug = 'ab-sim'
 	let estimatedHours
 	let isGoodFirstIssue = false
@@ -80,10 +145,6 @@ const mapLabels = (labels) => {
 		if (LABEL_CATEGORY_MAP[name]) cats.add(LABEL_CATEGORY_MAP[name])
 		if (LABEL_DIFFICULTY_MAP[name]) difficulty = LABEL_DIFFICULTY_MAP[name]
 		if (LABEL_PROJECT_MAP[name]) projectSlug = LABEL_PROJECT_MAP[name]
-		if (name.startsWith(POINTS_PREFIX)) {
-			const val = parseInt(name.replace(POINTS_PREFIX, ''), 10)
-			if (!Number.isNaN(val)) points = val
-		}
 		// Extract learning skills
 		if (name.startsWith('learn:')) {
 			skills.push(name.replace('learn:', ''))
@@ -101,7 +162,6 @@ const mapLabels = (labels) => {
 	return {
 		category: Array.from(cats),
 		difficulty,
-		points,
 		projectSlug,
 		skills,
 		estimatedHours,
@@ -121,12 +181,12 @@ const mapStatus = (issue, prIndex) => {
 	return 'open'
 }
 
-const buildTasks = (issues, prs) => {
+const buildTasks = (issues, prs, dateMap) => {
 	const prIndex = new Map()
 	prs.forEach((pr) => prIndex.set(pr.number, pr))
 
 	return issues.map((issue) => {
-		const { category, difficulty, points, projectSlug, skills, estimatedHours, isGoodFirstIssue } = mapLabels(issue.labels)
+		const { category, difficulty, projectSlug, skills, estimatedHours, isGoodFirstIssue } = mapLabels(issue.labels)
 		const status = mapStatus(issue, prIndex)
 		// Include avatar URL from GitHub
 		const assignees = issue.assignee 
@@ -137,6 +197,9 @@ const buildTasks = (issues, prs) => {
 			? { name: issue.closed_by.login, avatarUrl: issue.closed_by.avatar_url }
 			: undefined
 		const labels = issue.labels.map((l) => l.name || '').filter(Boolean)
+		
+		// Get dates from project
+		const dates = dateMap.get(issue.number) || {}
 
 		return {
 			id: String(issue.number),
@@ -145,7 +208,6 @@ const buildTasks = (issues, prs) => {
 			category: category.length ? category : ['frontend'],
 			status,
 			difficulty,
-			points,
 			assignees,
 			closedBy,
 			labels,
@@ -154,7 +216,9 @@ const buildTasks = (issues, prs) => {
 			isGoodFirstIssue,
 			githubUrl: issue.html_url,
 			updatedAt: issue.updated_at,
-			closedAt: issue.closed_at
+			closedAt: issue.closed_at,
+			startDate: dates.startDate,
+			targetDate: dates.targetDate
 		}
 	})
 }
@@ -252,8 +316,12 @@ const buildContributors = (tasks, recentActivity) => {
 
 const main = async () => {
 	try {
-		const [issues, prs] = await Promise.all([fetchAllIssues(), fetchAllPRs()])
-		const tasks = buildTasks(issues, prs)
+		const [issues, prs, dateMap] = await Promise.all([
+			fetchAllIssues(),
+			fetchAllPRs(),
+			fetchProjectDates()
+		])
+		const tasks = buildTasks(issues, prs, dateMap)
 
 		// Discover projects dynamically from task labels (no hardcoding)
 		const projectSlugs = new Set()

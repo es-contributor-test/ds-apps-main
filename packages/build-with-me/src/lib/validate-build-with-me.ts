@@ -7,7 +7,6 @@ export interface Task {
 	category: Category[]
 	status: Status
 	difficulty?: Difficulty
-	points?: number
 	assignees?: { name: string; avatarUrl?: string }[]
 	closedBy?: { name: string; avatarUrl?: string }
 	labels?: string[]
@@ -17,6 +16,8 @@ export interface Task {
 	githubUrl: string
 	updatedAt?: string
 	closedAt?: string
+	startDate?: string
+	targetDate?: string
 }
 
 export interface Cycle {

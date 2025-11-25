@@ -130,19 +130,20 @@ export default function TasksTable({ tasks }: TasksTableProps) {
 				)
 			},
 			{
-				accessorKey: 'points',
-				header: ({ column }) => (
-					<button
-						className='flex items-center gap-2 font-semibold hover:text-foreground'
-						onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-					>
-						Points
-						<ArrowUpDown className='h-3 w-3' />
-					</button>
-				),
+				accessorKey: 'startDate',
+				header: 'Start',
 				cell: ({ row }) => (
-					<span className='rounded-md bg-muted px-2 py-1 text-sm font-semibold text-foreground'>
-						{row.original.points ?? 0}
+					<span className='text-xs text-muted-foreground'>
+						{row.original.startDate ? new Date(row.original.startDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : '—'}
+					</span>
+				)
+			},
+			{
+				accessorKey: 'targetDate',
+				header: 'Target',
+				cell: ({ row }) => (
+					<span className='text-xs text-muted-foreground'>
+						{row.original.targetDate ? new Date(row.original.targetDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : '—'}
 					</span>
 				)
 			},
@@ -288,9 +289,11 @@ export default function TasksTable({ tasks }: TasksTableProps) {
 								</div>
 								<div className='flex items-center justify-between text-sm'>
 									<div className='flex items-center gap-3'>
-										<span className='rounded-md bg-muted px-2 py-1 text-xs font-semibold text-foreground'>
-											{task.points ?? 0} pts
-										</span>
+										{task.targetDate && (
+											<span className='text-xs text-muted-foreground'>
+												Target: {new Date(task.targetDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+											</span>
+										)}
 										{task.assignees?.length ? (
 											<span className='text-xs text-muted-foreground'>
 												{task.assignees.map((a) => a.name).join(', ')}

@@ -4,13 +4,67 @@
       "slug": "ab-sim",
       "name": "A/B Simulator",
       "phase": "Active",
-      "openTasks": 0,
-      "claimed": 2,
+      "openTasks": 1,
+      "claimed": 3,
       "mergedThisWeek": 17,
       "highlight": "17 tasks merged"
     }
   ],
   "tasks": [
+    {
+      "id": "21",
+      "title": "Refactor: Migrate fetch-data.mjs to unified GraphQL API",
+      "projectSlug": "ab-sim",
+      "category": [
+        "backend",
+        "wiring"
+      ],
+      "status": "open",
+      "difficulty": "hard",
+      "labels": [
+        "cat:backend",
+        "cat:wiring",
+        "diff:hard",
+        "hours:6+"
+      ],
+      "skills": [],
+      "estimatedHours": "6+",
+      "isGoodFirstIssue": false,
+      "githubUrl": "https://github.com/eeshansrivastava89/soma-portfolio/issues/21",
+      "updatedAt": "2025-11-25T17:28:57Z",
+      "closedAt": null,
+      "startDate": "2025-12-01",
+      "targetDate": "2025-12-06"
+    },
+    {
+      "id": "20",
+      "title": "build with me -> open work table -> make the table for \"open\" items only",
+      "projectSlug": "ab-sim",
+      "category": [
+        "frontend",
+        "backend"
+      ],
+      "status": "claimed",
+      "difficulty": "easy",
+      "assignees": [
+        {
+          "name": "eeshansrivastava89",
+          "avatarUrl": "https://avatars.githubusercontent.com/u/77134595?v=4"
+        }
+      ],
+      "labels": [
+        "cat:frontend",
+        "cat:backend",
+        "diff:easy"
+      ],
+      "skills": [],
+      "isGoodFirstIssue": false,
+      "githubUrl": "https://github.com/eeshansrivastava89/soma-portfolio/issues/20",
+      "updatedAt": "2025-11-25T17:24:29Z",
+      "closedAt": null,
+      "startDate": null,
+      "targetDate": null
+    },
     {
       "id": "19",
       "title": "surface issue numbers in open work, recent activity and contributor tables",
@@ -39,7 +93,9 @@
       "isGoodFirstIssue": false,
       "githubUrl": "https://github.com/eeshansrivastava89/soma-portfolio/issues/19",
       "updatedAt": "2025-11-25T09:54:49Z",
-      "closedAt": "2025-11-25T09:54:49Z"
+      "closedAt": "2025-11-25T09:54:49Z",
+      "startDate": "2025-11-25",
+      "targetDate": "2025-11-25"
     },
     {
       "id": "18",
@@ -71,7 +127,9 @@
       "isGoodFirstIssue": false,
       "githubUrl": "https://github.com/eeshansrivastava89/soma-portfolio/issues/18",
       "updatedAt": "2025-11-25T09:30:48Z",
-      "closedAt": "2025-11-25T09:30:48Z"
+      "closedAt": "2025-11-25T09:30:48Z",
+      "startDate": "2025-11-25",
+      "targetDate": "2025-11-25"
     },
     {
       "id": "17",
@@ -95,12 +153,14 @@
       "estimatedHours": "3-5",
       "isGoodFirstIssue": false,
       "githubUrl": "https://github.com/eeshansrivastava89/soma-portfolio/issues/17",
-      "updatedAt": "2025-11-25T08:57:46Z",
-      "closedAt": null
+      "updatedAt": "2025-11-25T17:14:57Z",
+      "closedAt": null,
+      "startDate": "2025-11-26",
+      "targetDate": "2025-11-28"
     },
     {
       "id": "16",
-      "title": "add columns for architecture docs & substack posts at the project level",
+      "title": "build with me -> open work table -> add columns for architecture docs & substack posts at the project level",
       "projectSlug": "ab-sim",
       "category": [
         "frontend",
@@ -122,8 +182,10 @@
       "estimatedHours": "3-5",
       "isGoodFirstIssue": false,
       "githubUrl": "https://github.com/eeshansrivastava89/soma-portfolio/issues/16",
-      "updatedAt": "2025-11-25T09:00:51Z",
-      "closedAt": null
+      "updatedAt": "2025-11-25T17:14:45Z",
+      "closedAt": null,
+      "startDate": "2025-11-26",
+      "targetDate": "2025-11-28"
     },
     {
       "id": "15",
@@ -148,7 +210,9 @@
       "isGoodFirstIssue": false,
       "githubUrl": "https://github.com/eeshansrivastava89/soma-portfolio/issues/15",
       "updatedAt": "2025-11-25T08:03:06Z",
-      "closedAt": "2025-11-25T07:59:44Z"
+      "closedAt": "2025-11-25T07:59:44Z",
+      "startDate": "2025-11-24",
+      "targetDate": "2025-11-25"
     },
     {
       "id": "14",
@@ -183,7 +247,9 @@
       "isGoodFirstIssue": false,
       "githubUrl": "https://github.com/eeshansrivastava89/soma-portfolio/issues/14",
       "updatedAt": "2025-11-25T05:47:09Z",
-      "closedAt": "2025-11-25T05:47:07Z"
+      "closedAt": "2025-11-25T05:47:07Z",
+      "startDate": "2025-11-06",
+      "targetDate": "2025-11-08"
     },
     {
       "id": "13",
@@ -218,7 +284,9 @@
       "isGoodFirstIssue": false,
       "githubUrl": "https://github.com/eeshansrivastava89/soma-portfolio/issues/13",
       "updatedAt": "2025-11-25T05:47:04Z",
-      "closedAt": "2025-11-25T05:47:02Z"
+      "closedAt": "2025-11-25T05:47:02Z",
+      "startDate": "2025-11-14",
+      "targetDate": "2025-11-15"
     },
     {
       "id": "12",
@@ -255,7 +323,9 @@
       "isGoodFirstIssue": false,
       "githubUrl": "https://github.com/eeshansrivastava89/soma-portfolio/issues/12",
       "updatedAt": "2025-11-25T05:46:59Z",
-      "closedAt": "2025-11-25T05:46:57Z"
+      "closedAt": "2025-11-25T05:46:57Z",
+      "startDate": "2025-11-24",
+      "targetDate": "2025-11-25"
     },
     {
       "id": "11",
@@ -290,7 +360,9 @@
       "isGoodFirstIssue": false,
       "githubUrl": "https://github.com/eeshansrivastava89/soma-portfolio/issues/11",
       "updatedAt": "2025-11-25T05:46:54Z",
-      "closedAt": "2025-11-25T05:46:52Z"
+      "closedAt": "2025-11-25T05:46:52Z",
+      "startDate": "2025-11-23",
+      "targetDate": "2025-11-24"
     },
     {
       "id": "10",
@@ -327,7 +399,9 @@
       "isGoodFirstIssue": false,
       "githubUrl": "https://github.com/eeshansrivastava89/soma-portfolio/issues/10",
       "updatedAt": "2025-11-25T05:46:49Z",
-      "closedAt": "2025-11-25T05:46:47Z"
+      "closedAt": "2025-11-25T05:46:47Z",
+      "startDate": "2025-11-22",
+      "targetDate": "2025-11-23"
     },
     {
       "id": "9",
@@ -364,7 +438,9 @@
       "isGoodFirstIssue": false,
       "githubUrl": "https://github.com/eeshansrivastava89/soma-portfolio/issues/9",
       "updatedAt": "2025-11-25T05:46:45Z",
-      "closedAt": "2025-11-25T05:46:43Z"
+      "closedAt": "2025-11-25T05:46:43Z",
+      "startDate": "2025-11-04",
+      "targetDate": "2025-11-06"
     },
     {
       "id": "8",
@@ -399,7 +475,9 @@
       "isGoodFirstIssue": false,
       "githubUrl": "https://github.com/eeshansrivastava89/soma-portfolio/issues/8",
       "updatedAt": "2025-11-25T05:46:40Z",
-      "closedAt": "2025-11-25T05:46:38Z"
+      "closedAt": "2025-11-25T05:46:38Z",
+      "startDate": "2025-11-13",
+      "targetDate": "2025-11-16"
     },
     {
       "id": "7",
@@ -434,7 +512,9 @@
       "isGoodFirstIssue": false,
       "githubUrl": "https://github.com/eeshansrivastava89/soma-portfolio/issues/7",
       "updatedAt": "2025-11-25T05:46:35Z",
-      "closedAt": "2025-11-25T05:46:33Z"
+      "closedAt": "2025-11-25T05:46:33Z",
+      "startDate": "2025-11-12",
+      "targetDate": "2025-11-13"
     },
     {
       "id": "6",
@@ -469,7 +549,9 @@
       "isGoodFirstIssue": false,
       "githubUrl": "https://github.com/eeshansrivastava89/soma-portfolio/issues/6",
       "updatedAt": "2025-11-25T05:46:31Z",
-      "closedAt": "2025-11-25T05:46:29Z"
+      "closedAt": "2025-11-25T05:46:29Z",
+      "startDate": "2025-11-09",
+      "targetDate": "2025-11-12"
     },
     {
       "id": "5",
@@ -504,7 +586,9 @@
       "isGoodFirstIssue": false,
       "githubUrl": "https://github.com/eeshansrivastava89/soma-portfolio/issues/5",
       "updatedAt": "2025-11-25T05:46:27Z",
-      "closedAt": "2025-11-25T05:46:25Z"
+      "closedAt": "2025-11-25T05:46:25Z",
+      "startDate": "2025-11-11",
+      "targetDate": "2025-11-14"
     },
     {
       "id": "4",
@@ -539,7 +623,9 @@
       "isGoodFirstIssue": false,
       "githubUrl": "https://github.com/eeshansrivastava89/soma-portfolio/issues/4",
       "updatedAt": "2025-11-25T05:46:22Z",
-      "closedAt": "2025-11-25T05:46:20Z"
+      "closedAt": "2025-11-25T05:46:20Z",
+      "startDate": "2025-11-09",
+      "targetDate": "2025-11-11"
     },
     {
       "id": "3",
@@ -574,7 +660,9 @@
       "isGoodFirstIssue": false,
       "githubUrl": "https://github.com/eeshansrivastava89/soma-portfolio/issues/3",
       "updatedAt": "2025-11-25T05:46:17Z",
-      "closedAt": "2025-11-25T05:46:15Z"
+      "closedAt": "2025-11-25T05:46:15Z",
+      "startDate": "2025-11-02",
+      "targetDate": "2025-11-04"
     },
     {
       "id": "2",
@@ -598,7 +686,9 @@
       "isGoodFirstIssue": false,
       "githubUrl": "https://github.com/eeshansrivastava89/soma-portfolio/issues/2",
       "updatedAt": "2025-11-24T15:05:08Z",
-      "closedAt": "2025-11-24T15:05:08Z"
+      "closedAt": "2025-11-24T15:05:08Z",
+      "startDate": "2025-11-22",
+      "targetDate": "2025-11-24"
     },
     {
       "id": "1",
@@ -634,10 +724,20 @@
       "isGoodFirstIssue": true,
       "githubUrl": "https://github.com/eeshansrivastava89/soma-portfolio/issues/1",
       "updatedAt": "2025-11-25T08:57:21Z",
-      "closedAt": "2025-11-25T08:57:21Z"
+      "closedAt": "2025-11-25T08:57:21Z",
+      "startDate": "2025-11-15",
+      "targetDate": "2025-11-17"
     }
   ],
   "hats": [
+    {
+      "name": "eeshansrivastava89",
+      "hats": [
+        "frontend",
+        "backend"
+      ],
+      "status": "claimed"
+    },
     {
       "name": "eeshansrivastava89",
       "hats": [
@@ -777,6 +877,33 @@
   ],
   "recentActivity": [
     {
+      "type": "claimed",
+      "taskId": "20",
+      "taskTitle": "build with me -> open work table -> make the table for \"open\" items only",
+      "user": "eeshansrivastava89",
+      "avatarUrl": "https://avatars.githubusercontent.com/u/77134595?v=4",
+      "timestamp": "2025-11-25T17:24:29Z",
+      "githubUrl": "https://github.com/eeshansrivastava89/soma-portfolio/issues/20"
+    },
+    {
+      "type": "claimed",
+      "taskId": "17",
+      "taskTitle": "create architecture doc page per project",
+      "user": "eeshansrivastava89",
+      "avatarUrl": "https://avatars.githubusercontent.com/u/77134595?v=4",
+      "timestamp": "2025-11-25T17:14:57Z",
+      "githubUrl": "https://github.com/eeshansrivastava89/soma-portfolio/issues/17"
+    },
+    {
+      "type": "claimed",
+      "taskId": "16",
+      "taskTitle": "build with me -> open work table -> add columns for architecture docs & substack posts at the project level",
+      "user": "eeshansrivastava89",
+      "avatarUrl": "https://avatars.githubusercontent.com/u/77134595?v=4",
+      "timestamp": "2025-11-25T17:14:45Z",
+      "githubUrl": "https://github.com/eeshansrivastava89/soma-portfolio/issues/16"
+    },
+    {
       "type": "merged",
       "taskId": "19",
       "taskTitle": "surface issue numbers in open work, recent activity and contributor tables",
@@ -793,24 +920,6 @@
       "avatarUrl": "https://avatars.githubusercontent.com/u/77134595?v=4",
       "timestamp": "2025-11-25T09:30:48Z",
       "githubUrl": "https://github.com/eeshansrivastava89/soma-portfolio/issues/18"
-    },
-    {
-      "type": "claimed",
-      "taskId": "16",
-      "taskTitle": "add columns for architecture docs & substack posts at the project level",
-      "user": "eeshansrivastava89",
-      "avatarUrl": "https://avatars.githubusercontent.com/u/77134595?v=4",
-      "timestamp": "2025-11-25T09:00:51Z",
-      "githubUrl": "https://github.com/eeshansrivastava89/soma-portfolio/issues/16"
-    },
-    {
-      "type": "claimed",
-      "taskId": "17",
-      "taskTitle": "create architecture doc page per project",
-      "user": "eeshansrivastava89",
-      "avatarUrl": "https://avatars.githubusercontent.com/u/77134595?v=4",
-      "timestamp": "2025-11-25T08:57:46Z",
-      "githubUrl": "https://github.com/eeshansrivastava89/soma-portfolio/issues/17"
     },
     {
       "type": "merged",
@@ -856,16 +965,7 @@
       "avatarUrl": "https://avatars.githubusercontent.com/u/77134595?v=4",
       "timestamp": "2025-11-25T05:46:57Z",
       "githubUrl": "https://github.com/eeshansrivastava89/soma-portfolio/issues/12"
-    },
-    {
-      "type": "merged",
-      "taskId": "11",
-      "taskTitle": "Set up pnpm workspaces monorepo architecture",
-      "user": "eeshansrivastava89",
-      "avatarUrl": "https://avatars.githubusercontent.com/u/77134595?v=4",
-      "timestamp": "2025-11-25T05:46:52Z",
-      "githubUrl": "https://github.com/eeshansrivastava89/soma-portfolio/issues/11"
     }
   ],
-  "lastFetchTime": "2025-11-25T10:38:52.534Z"
+  "lastFetchTime": "2025-11-25T17:48:26.432Z"
 }

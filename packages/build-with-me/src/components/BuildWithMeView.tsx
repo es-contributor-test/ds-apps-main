@@ -36,6 +36,9 @@ export default function BuildWithMeView({
 		}
 	}
 
+	// Filter to only open/claimed tasks for the Open Work section
+	const openTasks = tasks.filter(t => t.status === 'open' || t.status === 'claimed' || t.status === 'in-review')
+
 	return (
 		<div className='space-y-8'>
 			{/* Quick nav + refresh */}
@@ -85,7 +88,7 @@ export default function BuildWithMeView({
 					<h2 className='text-2xl font-bold text-foreground'>Open Work</h2>
 					<p className='text-sm text-muted-foreground'>Pick a task, claim an issue, and ship.</p>
 				</div>
-				<TasksView tasks={tasks} />
+				<TasksView tasks={openTasks} />
 			</section>
 
 			<section id='contributors' aria-label='Contributors'>
