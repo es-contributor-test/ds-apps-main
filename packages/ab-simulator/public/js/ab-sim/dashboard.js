@@ -13,7 +13,7 @@
 	function getPlotlyTheme() {
 		const isDark = document.documentElement.classList.contains('dark')
 		return {
-			font: { family: 'Satoshi, sans-serif', size: 12, color: isDark ? '#e5e7eb' : '#374151' },
+			font: { family: 'Inter, sans-serif', size: 12, color: isDark ? '#e5e7eb' : '#374151' },
 			paper_bgcolor: 'rgba(0,0,0,0)',
 			plot_bgcolor: 'rgba(0,0,0,0)',
 			xaxis: {
@@ -186,7 +186,7 @@
 						values: columns.map((col) => `<b>${col.replace(/_/g, ' ').toUpperCase()}</b>`),
 						align: 'center',
 						fill: { color: isDark ? '#1f2937' : '#f3f4f6' },
-						font: { color: theme.font.color, size: 12, family: 'Satoshi, monospace' },
+						font: { color: theme.font.color, size: 12, family: 'Inter, monospace' },
 						height: 28,
 						line: { color: isDark ? '#374151' : '#e5e7eb', width: 1 }
 					},
@@ -203,7 +203,7 @@
 						font: {
 							color: hasData ? theme.font.color : '#9ca3af',
 							size: 11,
-							family: 'Satoshi, monospace'
+							family: 'Inter, monospace'
 						},
 						height: 24,
 						line: { color: isDark ? '#374151' : '#e5e7eb', width: 1 }

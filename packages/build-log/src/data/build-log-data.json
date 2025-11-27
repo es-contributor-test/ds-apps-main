@@ -5,9 +5,9 @@
       "name": "A/B Simulator",
       "phase": "Active",
       "openTasks": 0,
-      "claimed": 5,
-      "mergedThisWeek": 34,
-      "highlight": "34 tasks merged"
+      "claimed": 4,
+      "mergedThisWeek": 35,
+      "highlight": "35 tasks merged"
     }
   ],
   "tasks": [
@@ -19,7 +19,7 @@
         "frontend",
         "wiring"
       ],
-      "status": "claimed",
+      "status": "merged",
       "difficulty": "medium",
       "assignees": [
         {
@@ -27,6 +27,10 @@
           "avatarUrl": "https://avatars.githubusercontent.com/u/77134595?v=4"
         }
       ],
+      "closedBy": {
+        "name": "eeshansrivastava89",
+        "avatarUrl": "https://avatars.githubusercontent.com/u/77134595?v=4"
+      },
       "labels": [
         "enhancement",
         "cat:frontend",
@@ -38,8 +42,8 @@
       "estimatedHours": "3-5",
       "isGoodFirstIssue": false,
       "githubUrl": "https://github.com/eeshansrivastava89/soma-portfolio/issues/39",
-      "updatedAt": "2025-11-27T07:52:41Z",
-      "closedAt": null,
+      "updatedAt": "2025-11-27T07:58:50Z",
+      "closedAt": "2025-11-27T07:58:50Z",
       "startDate": null,
       "targetDate": null
     },
@@ -1313,7 +1317,7 @@
         "frontend",
         "wiring"
       ],
-      "status": "claimed"
+      "status": "merged"
     },
     {
       "name": "eeshansrivastava89",
@@ -1589,19 +1593,19 @@
     {
       "name": "eeshansrivastava89",
       "avatarUrl": "https://avatars.githubusercontent.com/u/77134595?v=4",
-      "mergedPRs": 34,
+      "mergedPRs": 35,
       "reviews": 0,
       "recentActivityCount": 10
     }
   ],
   "recentActivity": [
     {
-      "type": "claimed",
+      "type": "merged",
       "taskId": "39",
       "taskTitle": "DRY Projects: Shared YAML data + ProjectCard component",
       "user": "eeshansrivastava89",
       "avatarUrl": "https://avatars.githubusercontent.com/u/77134595?v=4",
-      "timestamp": "2025-11-27T07:52:41Z",
+      "timestamp": "2025-11-27T07:58:50Z",
       "githubUrl": "https://github.com/eeshansrivastava89/soma-portfolio/issues/39"
     },
     {
@@ -1686,5 +1690,5 @@
       "githubUrl": "https://github.com/eeshansrivastava89/soma-portfolio/issues/30"
     }
   ],
-  "lastFetchTime": "2025-11-27T07:57:30.635Z"
+  "lastFetchTime": "2025-11-27T08:26:41.906Z"
 }

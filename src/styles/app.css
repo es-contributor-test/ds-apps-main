@@ -1,20 +1,8 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300..700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-@font-face {
-	font-family: 'Satoshi';
-	src: url('/shared-assets/fonts/Satoshi-Variable.ttf');
-	font-style: normal;
-	font-display: swap;
-}
-
-@font-face {
-	font-family: 'Satoshi';
-	src: url('/shared-assets/fonts/Satoshi-VariableItalic.ttf');
-	font-style: italic;
-	font-display: swap;
-}
 
 @layer base {
 	:root {
