@@ -170,147 +170,113 @@ Consolidated 3 sections into unified `ContributorCards`. Removed competitive ele
 
 ---
 
-## Phase 5: Design System Refinement & Live Stats
+## Phase 5: Design System Refinement & Live Stats ✅
 
 **Goal:** Shift from "friendly/eager" to "authoritative/minimal" design. Remove decorative elements, adopt black/white palette, and add live project stats fetched from Supabase.
 
-**Status:** 🔄 In Progress
-
-### Design Mockup
-
-```
-┌─────────────────────────────────────────────────────────────────────────┐
-│                                                                         │
-│  A/B Test Simulator                                  ● Live    [Try It] │
-│                                                                         │
-│  Interactive tool for learning A/B testing fundamentals.                │
-│  Run experiments, visualize statistical significance, and               │
-│  understand the math behind the scenes.                                 │
-│                                                                         │
-│  ┌────────────────┐  ┌────────────────┐  ┌────────────────┐            │
-│  │    12,847      │  │      67%       │  │   Variant B    │            │
-│  │  games played  │  │   completion   │  │    winning     │            │
-│  └────────────────┘  └────────────────┘  └────────────────┘            │
-│                                                                         │
-│  [Astro]  [React]  [Tailwind]  [Plotly]    ← gray tags, not colored    │
-│                                                                         │
-└─────────────────────────────────────────────────────────────────────────┘
-
-Buttons: Black fill, white text (not orange)
-Tags: Gray/slate background (not colored)
-Status "Live": Green dot retained (functional indicator)
-```
+**Completed:** 2025-11-28
 
 ### Tasks
 
 | Task | Description | Status |
 |------|-------------|--------|
-| **Remove border beam** ([#40](https://github.com/eeshansrivastava89/soma-portfolio/issues/40)) | Delete rotating animation from Build Log nav | ⬜ Todo |
-| **Black/white buttons** ([#41](https://github.com/eeshansrivastava89/soma-portfolio/issues/41)) | Replace orange CTAs with black throughout site | ⬜ Todo |
-| **Gray tags** ([#42](https://github.com/eeshansrivastava89/soma-portfolio/issues/42)) | Replace colored tag pills with neutral gray | ⬜ Todo |
-| **Featured posts field** ([#43](https://github.com/eeshansrivastava89/soma-portfolio/issues/43)) | Add `featured: true` to post frontmatter schema | ⬜ Todo |
-| **Featured posts section** ([#44](https://github.com/eeshansrivastava89/soma-portfolio/issues/44)) | Show hand-picked posts on home page | ⬜ Todo |
-| **Supabase view for stats** ([#45](https://github.com/eeshansrivastava89/soma-portfolio/issues/45)) | Create `v_project_stats` view | ⬜ Todo |
-| **Stats in projects.yaml** ([#46](https://github.com/eeshansrivastava89/soma-portfolio/issues/46)) | Add stats config per project | ⬜ Todo |
-| **Live stats in ProjectCard** ([#47](https://github.com/eeshansrivastava89/soma-portfolio/issues/47)) | Client-side hydration of stats from Supabase | ⬜ Todo |
+| **Remove border beam** ([#40](https://github.com/eeshansrivastava89/soma-portfolio/issues/40)) | Delete rotating animation from Build Log nav | ✅ Done |
+| **Black/white buttons** ([#41](https://github.com/eeshansrivastava89/soma-portfolio/issues/41)) | Replace orange CTAs with black throughout site | ✅ Done |
+| **Gray tags** ([#42](https://github.com/eeshansrivastava89/soma-portfolio/issues/42)) | Replace colored tag pills with neutral gray | ✅ Done |
+| **Featured posts field** ([#43](https://github.com/eeshansrivastava89/soma-portfolio/issues/43)) | Add `featured: true` to post frontmatter schema | ✅ Done |
+| **Featured posts section** ([#44](https://github.com/eeshansrivastava89/soma-portfolio/issues/44)) | Show hand-picked posts on home page | ✅ Done |
+| **Supabase view for stats** ([#45](https://github.com/eeshansrivastava89/soma-portfolio/issues/45)) | Create `v_project_stats` view | ✅ Done |
+| **Stats in projects.yaml** ([#46](https://github.com/eeshansrivastava89/soma-portfolio/issues/46)) | Add stats config per project | ✅ Done |
+| **Live stats in ProjectCard** ([#47](https://github.com/eeshansrivastava89/soma-portfolio/issues/47)) | Client-side hydration of stats from Supabase | ✅ Done |
 
-### Architecture: Live Stats
+### Progress Log
 
-**Supabase View (to create):**
+**Design Changes:**
+- Removed 64-line border-beam animation from `app.css`
+- Replaced all `bg-orange-*` buttons with `bg-foreground text-background`
+- Replaced `TAG_COLORS` system with neutral `bg-muted text-muted-foreground`
+- Updated 15+ component files across `packages/build-log/src/components/`
+- Changed grid-live pulse animation to neutral black shadow
+
+**Featured Posts:**
+- Added `featured: z.boolean().default(false)` to post schema
+- Marked 2 posts as featured: "How I AI" and "AI Series"
+- Home page now shows Featured Writing section above Build Log
+
+**Live Stats Architecture (Final):**
+
+Initially planned a server-side API proxy (`/api/project-stats`), but simplified to call Supabase directly from client (same pattern as A/B simulator dashboard). No architecture change needed.
+
+```
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│   ProjectCard   │───▶│    Supabase     │───▶│ v_project_stats │
+│  (client-side)  │    │   REST API      │    │     (view)      │
+└─────────────────┘    └─────────────────┘    └─────────────────┘
+```
+
+**Supabase View (created):**
 
 ```sql
--- v_project_stats: Returns summary stats for project cards
 CREATE OR REPLACE VIEW v_project_stats AS
 SELECT 
   'ab-simulator' as project_id,
-  COUNT(*) as games_played,
-  ROUND(
-    COUNT(*) FILTER (WHERE event = 'puzzle_completed')::numeric / 
-    NULLIF(COUNT(*) FILTER (WHERE event = 'puzzle_started'), 0) * 100
-  ) as completion_rate,
-  (
-    SELECT variant 
-    FROM v_variant_stats 
-    ORDER BY avg_completion_time ASC 
-    LIMIT 1
-  ) as winning_variant
+  COUNT(*) FILTER (WHERE event = 'puzzle_started') as games_played,
+  CASE 
+    WHEN COUNT(*) FILTER (WHERE event = 'puzzle_started') > 0 THEN
+      ROUND(
+        COUNT(*) FILTER (WHERE event = 'puzzle_completed')::numeric / 
+        COUNT(*) FILTER (WHERE event = 'puzzle_started') * 100
+      )::integer
+    ELSE 0
+  END as completion_rate,
+  (SELECT variant FROM v_variant_stats ORDER BY avg_completion_time ASC LIMIT 1) as winning_variant
 FROM posthog_events
-WHERE event IN ('puzzle_started', 'puzzle_completed')
-  AND session_id IS NOT NULL;
+WHERE event IN ('puzzle_started', 'puzzle_completed') AND session_id IS NOT NULL;
 
 GRANT SELECT ON v_project_stats TO anon, authenticated;
 ```
 
-**projects.yaml update:**
+**projects.yaml (final):**
 
 ```yaml
-projects:
-  - id: ab-simulator
-    name: A/B Test Simulator
-    # ... existing fields ...
-    stats:
-      endpoint: v_project_stats
-      display:
-        - key: games_played
-          label: games played
-        - key: completion_rate
-          label: completion
-          suffix: "%"
-        - key: winning_variant
-          label: winning
+stats:
+  metrics:
+    - key: games_played
+      label: games played
+    - key: completion_rate
+      label: completion
+      format: percent
+    - key: winning_variant
+      label: winning
 ```
 
-**ProjectCard hydration pattern:**
-
-```astro
-<!-- Stats container with data attributes -->
-{project.stats && (
-  <div 
-    class="project-stats grid grid-cols-3 gap-3 mt-4" 
-    data-project-id={project.id}
-    data-stats-endpoint={project.stats.endpoint}
-  >
-    {project.stats.display.map((stat) => (
-      <div class="text-center">
-        <div class="text-2xl font-bold" data-stat-key={stat.key}>--</div>
-        <div class="text-xs text-muted-foreground">{stat.label}</div>
-      </div>
-    ))}
-  </div>
-)}
-
-<script>
-  // Vanilla JS hydration — fetches from Supabase and updates DOM
-  document.querySelectorAll('.project-stats').forEach(async (el) => {
-    const projectId = el.dataset.projectId
-    const endpoint = el.dataset.statsEndpoint
-    // ... fetch and render
-  })
-</script>
-```
-
-### Files to Modify
+**Files Modified:**
 
 | File | Change |
 |------|--------|
-| `src/styles/app.css` | Remove border-beam animation |
-| `src/components/layout/Header.astro` | Remove border-beam class |
-| `src/pages/index.astro` | Black buttons, gray tags |
-| `packages/build-log/src/pages/index.astro` | Black buttons, gray tags |
-| `packages/build-log/src/pages/contribute/index.astro` | Black buttons |
-| `packages/shared/src/components/ProjectCard.astro` | Black buttons, gray tags, stats display |
-| `packages/shared/src/lib/projects.ts` | Add stats types, remove colored tag config |
-| `packages/shared/src/data/projects.yaml` | Add stats config |
-| `packages/shared/src/supabase.ts` | Add fetchProjectStats() helper |
-| `src/content/config.ts` | Add `featured` field to post schema |
-| Post frontmatter | Add `featured: true` to select posts |
+| `src/styles/app.css` | Removed border-beam (64 lines), neutral grid-live |
+| `packages/shared/src/styles/app.css` | Neutral grid-live animation |
+| `src/components/layout/Header.astro` | Removed border-beam class |
+| `src/pages/index.astro` | Black buttons, featured posts section |
+| `packages/build-log/src/pages/index.astro` | Black buttons |
+| `packages/build-log/src/pages/contribute/index.astro` | Neutral stats display |
+| `packages/build-log/src/components/*.tsx` | Orange → foreground (15 files) |
+| `packages/shared/src/components/ProjectCard.astro` | Stats hydration, gray tags |
+| `packages/shared/src/lib/projects.ts` | Removed TAG_COLORS, added stats types |
+| `packages/shared/src/lib/learnings.ts` | Blog type badge now gray |
+| `packages/shared/src/data/projects.yaml` | Stats config |
+| `packages/ab-simulator/src/pages/index.astro` | Stop/Try Again buttons |
+| `src/content/config.ts` | Added featured field |
+| `src/content/post/how-i-ai.md` | `featured: true` |
+| `src/content/post/series-ai.md` | `featured: true` |
+| `supabase-schema.sql` | Added v_project_stats view |
 
-### Design Principles
+### Design Principles (Applied)
 
-1. **Restraint over enthusiasm** — Let content speak, reduce visual noise
-2. **Black/white palette** — Color only for functional indicators (Live = green)
-3. **Typography carries design** — Not cards, badges, animations
-4. **Data proves credibility** — Real numbers from real usage
+1. **Restraint over enthusiasm** — Removed border beam, reduced color variety
+2. **Black/white palette** — Only functional indicators use color (Live = green)
+3. **Typography carries design** — Less visual noise, content forward
+4. **Data proves credibility** — Live stats from real usage (172 games, 70% completion)
 
 ---
 
