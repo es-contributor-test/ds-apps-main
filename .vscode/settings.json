@@ -1,5 +1,7 @@
 {
   "yaml.schemas": {
     "./packages/shared/src/data/learnings.schema.json": "**/learnings.yaml"
-  }
+  },
+  "css.customData": [".vscode/tailwind.json"],
+  "css.lint.unknownAtRules": "ignore"
 }

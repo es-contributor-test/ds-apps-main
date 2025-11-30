@@ -7,14 +7,12 @@
 		"dev:check": "astro check --watch & astro dev",
 		"dev:ab-sim": "pnpm --filter @soma/ab-simulator dev",
 		"start": "astro dev",
-		"prebuild": "node scripts/fetch-build-log.mjs",
 		"build:packages": "dotenv -e .env -- pnpm --filter @soma/ab-simulator build",
 		"build": "pnpm run build:packages && astro build",
 		"build:check": "astro check && astro build",
 		"preview": "astro preview",
 		"astro": "astro",
-		"lint": "prettier --write  \"**/*.{js,jsx,ts,tsx,md,mdx,svelte,astro}\" && eslint --fix \"src/**/*.{js,ts,jsx,tsx,svelte,astro}\"",
-		"fetch:build-log": "node scripts/fetch-build-log.mjs"
+		"lint": "prettier --write  \"**/*.{js,jsx,ts,tsx,md,mdx,svelte,astro}\" && eslint --fix \"src/**/*.{js,ts,jsx,tsx,svelte,astro}\""
 	},
 	"dependencies": {
 		"@astrojs/check": "^0.5.6",

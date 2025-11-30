@@ -1,0 +1,49 @@
+---
+/**
+ * Projects Index Page
+ * Lists all projects with full ProjectCard and upcoming timeline
+ */
+import PageLayout from '../../layouts/BaseLayout.astro'
+import Section from '../../components/Section.astro'
+
+import { parseProjectsYaml, getLiveProjects, getProjectsByStatus } from '../../../packages/shared/src/lib/projects'
+import projectsYaml from '../../../packages/shared/src/data/projects.yaml?raw'
+import ProjectCard from '../../../packages/shared/src/components/ProjectCard.astro'
+import Timeline from '../../../packages/shared/src/components/Timeline.astro'
+
+const allProjects = parseProjectsYaml(projectsYaml)
+const liveProjects = getLiveProjects(allProjects)
+const inProgressProjects = getProjectsByStatus(allProjects, 'in-progress')
+const upcomingProjects = getProjectsByStatus(allProjects, 'coming-soon')
+---
+
+<PageLayout meta={{ title: 'Projects' }}>
+	<div class='flex w-full flex-col gap-y-10'>
+		<Section title='Projects'>
+			<p class='text-muted-foreground'>
+				Interactive tools built end-to-end with AI assistance. Each project is a learning lab — 
+				I'm the architect, AI handles the scaffolding.
+			</p>
+		</Section>
+
+		{liveProjects.length > 0 && (
+			<Section title='Live'>
+				<div class='space-y-4'>
+					{liveProjects.map((project) => (
+						<ProjectCard project={project} variant='full' />
+					))}
+				</div>
+			</Section>
+		)}
+
+		{(inProgressProjects.length > 0 || upcomingProjects.length > 0) && (
+			<Section title="What's Next">
+				<Timeline 
+					inProgressProjects={inProgressProjects} 
+					upcomingProjects={upcomingProjects}
+					title=""
+				/>
+			</Section>
+		)}
+	</div>
+</PageLayout>

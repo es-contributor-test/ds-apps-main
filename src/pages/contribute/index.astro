@@ -1,80 +1,230 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro'
-import BuildLogView from '@/components/contribute/BuildLogView'
-import VideoModal from '@/components/contribute/VideoModal'
-import { validateBuildLogData } from '@/lib/build-log-types'
 
-import buildLogDataRaw from '@/data/build-log-data.json'
-
-const buildLogData = validateBuildLogData(buildLogDataRaw)
-if (!buildLogData) throw new Error('Invalid build-log-data.json')
-
-const { tasks, contributors, recentActivity } = buildLogData
-
-const mergedCount = tasks.filter(t => t.status === 'merged').length
-const openCount = tasks.filter(t => t.status === 'open').length
-const contributorCount = contributors.length
+const lastUpdated = 'November 30, 2025'
 ---
 
-<BaseLayout meta={{ title: 'Contribute' }}>
-  <div class='w-full space-y-12'>
-    <!-- HERO -->
-    <section class='space-y-4'>
-      <a href='/' class='inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition'>← Back to Home</a>
+<BaseLayout meta={{ title: 'Build With Me' }}>
+  <article class="prose prose-slate dark:prose-invert max-w-none">
+    <!-- Back link -->
+    <a href="/" class="no-underline text-sm text-muted-foreground hover:text-foreground transition inline-flex items-center gap-1 mb-6">
+      ← Back to Home
+    </a>
 
-      <div class='flex flex-col gap-8 lg:flex-row lg:items-start lg:justify-between'>
-        <div class='space-y-4'>
-          <h1 class='text-xl font-bold text-foreground sm:text-2xl'>Build With Me</h1>
-          <p class='max-w-2xl text-base text-muted-foreground'>Claim a task, open a PR, get code review, and ship. Real projects, real GitHub history.</p>
+    <h1 class="text-2xl font-bold mb-2">Build With Me</h1>
+    
+    <blockquote class="border-l-4 border-slate-300 dark:border-slate-600 pl-4 italic text-muted-foreground not-italic">
+      This is a living document. <strong>Last updated: {lastUpdated}</strong>
+    </blockquote>
 
-          <div class='flex flex-wrap items-center gap-6 text-sm'>
-            <div class='flex items-center gap-1.5'>
-              <span class='text-2xl font-bold text-foreground'>{contributorCount}</span>
-              <span class='text-muted-foreground'>contributors</span>
-            </div>
-            <div class='flex items-center gap-1.5'>
-              <span class='text-2xl font-bold text-foreground'>{openCount}</span>
-              <span class='text-muted-foreground'>open</span>
-            </div>
-            <div class='flex items-center gap-1.5'>
-              <span class='text-2xl font-bold text-emerald-600'>{mergedCount}</span>
-              <span class='text-muted-foreground'>shipped</span>
-            </div>
-          </div>
-        </div>
+    <p class="text-muted-foreground">
+      I'm building in public. This page tracks what I'm working on, what's coming next, and how you can contribute.
+    </p>
 
-        <!-- Video CTA - inline with hero -->
-        <div class='w-full max-w-xs shrink-0'>
-          <VideoModal client:load />
-        </div>
-      </div>
-    </section>
+    <hr class="my-4 border-slate-200 dark:border-slate-700" />
 
-    <!-- Tasks & Contributors -->
-    <BuildLogView tasks={tasks} contributors={contributors} recentActivity={recentActivity} client:load />
+    <!-- Current Focus -->
+    <h2 class="text-xl font-semibold flex items-center gap-2">🎯 Current Focus</h2>
+    
+    <div class="overflow-x-auto">
+      <table class="min-w-full text-sm">
+        <thead>
+          <tr class="border-b border-slate-200 dark:border-slate-700">
+            <th class="text-left py-2 font-semibold">Project</th>
+            <th class="text-left py-2 font-semibold">Status</th>
+            <th class="text-left py-2 font-semibold">Try It</th>
+            <th class="text-left py-2 font-semibold">Docs</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="border-b border-slate-100 dark:border-slate-800">
+            <td class="py-2">A/B Test Simulator</td>
+            <td class="py-2"><span class="inline-flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-emerald-500"></span> Live</span></td>
+            <td class="py-2"><a href="/ab-simulator" class="text-blue-600 dark:text-blue-400 hover:underline">Play →</a></td>
+            <td class="py-2"><a href="/projects/ab-simulator" class="text-blue-600 dark:text-blue-400 hover:underline">Hub →</a></td>
+          </tr>
+          <tr class="border-b border-slate-100 dark:border-slate-800">
+            <td class="py-2">Portfolio Site</td>
+            <td class="py-2"><span class="inline-flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-amber-500"></span> Polishing</span></td>
+            <td class="py-2"><a href="/" class="text-blue-600 dark:text-blue-400 hover:underline">You're here!</a></td>
+            <td class="py-2">—</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
 
-    <!-- How to Ship -->
-    <section class='space-y-4'>
-      <h2 class='text-xl font-semibold text-foreground'>How to Ship</h2>
-      <ol class='list-decimal space-y-3 pl-5 text-sm text-muted-foreground'>
-        <li><span class='font-semibold text-foreground'>Claim the issue:</span> comment on GitHub to reserve your slot; unclaimed issues are fair game.</li>
-        <li><span class='font-semibold text-foreground'>Branch naming:</span> <code class='bg-slate-200 dark:bg-slate-800 text-slate-800 dark:text-slate-200 px-2 py-1 text-[11px]'>feature/your-handle-topic</code>.</li>
-        <li><span class='font-semibold text-foreground'>Setup env:</span> add PostHog + Supabase keys; run <code class='bg-slate-200 dark:bg-slate-800 text-slate-800 dark:text-slate-200 px-2 py-1 text-[11px]'>pnpm dev</code>.</li>
-        <li><span class='font-semibold text-foreground'>Validate:</span> play the flow, keep console clean, lint if you touch TS/JS.</li>
-        <li><span class='font-semibold text-foreground'>PR template:</span> include summary, screenshots/gifs for UI, checklist for tracking changes.</li>
-        <li><span class='font-semibold text-foreground'>Optional:</span> add a 30–60s Loom demo for reviewers.</li>
-      </ol>
-    </section>
+    <hr class="my-4 border-slate-200 dark:border-slate-700" />
+
+    <!-- Active Work -->
+    <h2 class="text-xl font-semibold flex items-center gap-2">📋 Active Work</h2>
+    
+    <div class="overflow-x-auto">
+      <table class="min-w-full text-sm">
+        <thead>
+          <tr class="border-b border-slate-200 dark:border-slate-700">
+            <th class="text-left py-2 font-semibold">Phase</th>
+            <th class="text-left py-2 font-semibold">Description</th>
+            <th class="text-left py-2 font-semibold">Status</th>
+            <th class="text-left py-2 font-semibold">GitHub</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="border-b border-slate-100 dark:border-slate-800">
+            <td class="py-2 font-medium">Phase 1</td>
+            <td class="py-2">Shared Infrastructure</td>
+            <td class="py-2"><span class="inline-flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-emerald-500"></span> Complete</span></td>
+            <td class="py-2"><a href="https://github.com/eeshansrivastava89/soma-portfolio/issues/86" class="text-blue-600 dark:text-blue-400 hover:underline">#86</a></td>
+          </tr>
+          <tr class="border-b border-slate-100 dark:border-slate-800">
+            <td class="py-2 font-medium">Phase 2</td>
+            <td class="py-2">Project Hub + Game Polish</td>
+            <td class="py-2"><span class="inline-flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-emerald-500"></span> Complete</span></td>
+            <td class="py-2"><a href="https://github.com/eeshansrivastava89/soma-portfolio/issues/87" class="text-blue-600 dark:text-blue-400 hover:underline">#87</a></td>
+          </tr>
+          <tr class="border-b border-slate-100 dark:border-slate-800">
+            <td class="py-2 font-medium">Phase 3</td>
+            <td class="py-2">Contribute + Content</td>
+            <td class="py-2"><span class="inline-flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span> In Progress</span></td>
+            <td class="py-2"><a href="https://github.com/eeshansrivastava89/soma-portfolio/issues/88" class="text-blue-600 dark:text-blue-400 hover:underline">#88</a></td>
+          </tr>
+          <tr class="border-b border-slate-100 dark:border-slate-800">
+            <td class="py-2 font-medium">Phase 4</td>
+            <td class="py-2">Stack + Documentation</td>
+            <td class="py-2"><span class="inline-flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-slate-400"></span> Not Started</span></td>
+            <td class="py-2"><a href="https://github.com/eeshansrivastava89/soma-portfolio/issues/89" class="text-blue-600 dark:text-blue-400 hover:underline">#89</a></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p class="text-sm text-muted-foreground mt-4">
+      <strong>See all open issues →</strong> <a href="https://github.com/eeshansrivastava89/soma-portfolio/issues?q=is%3Aissue+is%3Aopen" class="text-blue-600 dark:text-blue-400 hover:underline">GitHub Issues</a>
+    </p>
+
+    <hr class="my-4 border-slate-200 dark:border-slate-700" />
+
+    <!-- Quick Links -->
+    <h2 class="text-xl font-semibold flex items-center gap-2">🔗 Quick Links</h2>
+    
+    <ul class="space-y-2 list-none pl-0">
+      <li>
+        <a href="https://github.com/eeshansrivastava89/soma-portfolio/issues?q=is%3Aissue+is%3Aopen" class="inline-flex items-center gap-2 text-blue-600 dark:text-blue-400 hover:underline">
+          📂 All Open Issues
+        </a>
+      </li>
+      <li>
+        <a href="https://github.com/eeshansrivastava89/soma-portfolio/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22" class="inline-flex items-center gap-2 text-blue-600 dark:text-blue-400 hover:underline">
+          🏷️ Good First Issues
+        </a>
+      </li>
+      <li>
+        <a href="https://github.com/users/eeshansrivastava89/projects/1" class="inline-flex items-center gap-2 text-blue-600 dark:text-blue-400 hover:underline">
+          📊 Project Board
+        </a>
+      </li>
+      <li>
+        <a href="https://github.com/eeshansrivastava89/soma-portfolio" class="inline-flex items-center gap-2 text-blue-600 dark:text-blue-400 hover:underline">
+          📁 Source Code
+        </a>
+      </li>
+    </ul>
+
+    <hr class="my-4 border-slate-200 dark:border-slate-700" />
+
+    <!-- How to Contribute -->
+    <h2 class="text-xl font-semibold flex items-center gap-2">🚀 How to Contribute</h2>
+    
+    <ol class="space-y-2">
+      <li><strong>Browse</strong> <a href="https://github.com/eeshansrivastava89/soma-portfolio/issues?q=is%3Aissue+is%3Aopen" class="text-blue-600 dark:text-blue-400 hover:underline">open issues</a></li>
+      <li><strong>Claim</strong> by commenting on an issue</li>
+      <li><strong>Branch</strong> as <code class="bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-sm">feature/your-handle-topic</code></li>
+      <li><strong>Ship</strong> a PR with summary + screenshots</li>
+    </ol>
+
+    <p class="text-sm text-muted-foreground mt-4">
+      <strong>Stack:</strong> Astro · Tailwind · PostHog · Supabase · TypeScript
+    </p>
+
+    <hr class="my-4 border-slate-200 dark:border-slate-700" />
+
+    <!-- Contributors -->
+    <h2 class="text-xl font-semibold flex items-center gap-2">👥 Contributors</h2>
+    
+    <div class="overflow-x-auto">
+      <table class="min-w-full text-sm">
+        <thead>
+          <tr class="border-b border-slate-200 dark:border-slate-700">
+            <th class="text-left py-2 font-semibold">Who</th>
+            <th class="text-left py-2 font-semibold">Role</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="border-b border-slate-100 dark:border-slate-800">
+            <td class="py-2">
+              <a href="https://github.com/eeshansrivastava89" class="text-blue-600 dark:text-blue-400 hover:underline">@eeshansrivastava89</a>
+            </td>
+            <td class="py-2">Everything (so far)</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p class="text-sm text-muted-foreground mt-2 italic">
+      Want to be listed here? Ship a PR!
+    </p>
+
+    <hr class="my-4 border-slate-200 dark:border-slate-700" />
+
+    <!-- Follow the Build -->
+    <h2 class="text-xl font-semibold flex items-center gap-2">📰 Follow the Build</h2>
+    
+    <ul class="space-y-2 list-none pl-0">
+      <li>
+        <a href="https://eeshansrivastava.substack.com/" class="inline-flex items-center gap-2 text-blue-600 dark:text-blue-400 hover:underline">
+          📧 Substack — Weekly updates
+        </a>
+      </li>
+      <li>
+        <a href="https://twitter.com/eeshan_s" class="inline-flex items-center gap-2 text-blue-600 dark:text-blue-400 hover:underline">
+          🐦 Twitter/X — Real-time thoughts
+        </a>
+      </li>
+      <li>
+        <a href="/rss.xml" class="inline-flex items-center gap-2 text-blue-600 dark:text-blue-400 hover:underline">
+          📡 RSS — Blog feed
+        </a>
+      </li>
+    </ul>
+
+    <hr class="my-4 border-slate-200 dark:border-slate-700" />
 
     <!-- FAQ -->
-    <section class='space-y-4'>
-      <h2 class='text-xl font-semibold text-foreground'>FAQ</h2>
-      <ul class='space-y-2 text-sm text-muted-foreground'>
-        <li><span class='font-semibold text-foreground'>Non-commercial:</span> personal educational project.</li>
-        <li><span class='font-semibold text-foreground'>Time:</span> issues marked for scope; async friendly.</li>
-        <li><span class='font-semibold text-foreground'>Stack:</span> Astro, Tailwind, PostHog, Supabase/PostgREST, Plotly.</li>
-        <li><span class='font-semibold text-foreground'>Taken issue?</span> pick another or waitlist in comments.</li>
-      </ul>
-    </section>
-  </div>
+    <h2 class="text-xl font-semibold flex items-center gap-2">❓ FAQ</h2>
+    
+    <div class="overflow-x-auto">
+      <table class="min-w-full text-sm">
+        <thead>
+          <tr class="border-b border-slate-200 dark:border-slate-700">
+            <th class="text-left py-2 font-semibold">Question</th>
+            <th class="text-left py-2 font-semibold">Answer</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="border-b border-slate-100 dark:border-slate-800">
+            <td class="py-2">Is this commercial?</td>
+            <td class="py-2">No — personal learning project</td>
+          </tr>
+          <tr class="border-b border-slate-100 dark:border-slate-800">
+            <td class="py-2">Time commitment?</td>
+            <td class="py-2">Async friendly. Issues scoped for 1-2 or 3-5 hrs</td>
+          </tr>
+          <tr class="border-b border-slate-100 dark:border-slate-800">
+            <td class="py-2">Issue taken?</td>
+            <td class="py-2">Pick another or comment to waitlist</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </article>
 </BaseLayout>

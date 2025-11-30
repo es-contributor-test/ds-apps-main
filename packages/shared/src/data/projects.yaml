@@ -4,6 +4,7 @@ projects:
   - id: ab-simulator
     name: A/B Testing Memory Game
     url: /ab-simulator/
+    hubUrl: /projects/ab-simulator
     status: live
     description: Interactive tool for learning A/B testing fundamentals. Run experiments, visualize statistical significance, and understand the math behind the scenes.
     shortDescription: Interactive tool for learning A/B testing fundamentals
@@ -22,5 +23,31 @@ projects:
           format: percent
         - key: winning_variant
           label: winning
+    aiStory:
+      - Claude + Cursor scaffolded the React game UI and Astro integration
+      - GitHub Copilot handled repetitive refactors and test generation
+      - Claude designed the PostHog → Supabase data pipeline architecture
+      - I architected the system, defined requirements, and reviewed all code
+
+  - id: prompt-debugger
+    name: Prompt Debugger
+    url: '#'
+    status: in-progress
+    description: Tool to visualize and iterate on LLM prompts. See token usage, compare outputs, and debug prompt chains.
+    shortDescription: Visualize and iterate on LLM prompts
+    tags:
+      - name: LLM APIs
+      - name: React
+
+  - id: data-story-generator
+    name: Data Story Generator
+    url: '#'
+    status: coming-soon
+    description: Turn SQL queries into narrative insights. Automatic chart selection and plain-English summaries.
+    shortDescription: Turn SQL queries into narrative insights
+    tags:
+      - name: SQL
+      - name: LLMs
+      - name: Visualization
 
 

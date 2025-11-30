@@ -31,7 +31,8 @@ const post = defineCollection({
 			featured: z.boolean().default(false),
 			category: z.enum(['technical', 'essay']).default('essay'),
 			tags: z.array(z.string()).default([]).transform(removeDupsAndLowerCase),
-			ogImage: z.string().optional()
+			ogImage: z.string().optional(),
+			projectId: z.string().optional() // Links post to a project in projects.yaml
 		})
 })
 

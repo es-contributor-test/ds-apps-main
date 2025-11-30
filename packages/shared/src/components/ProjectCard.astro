@@ -60,12 +60,22 @@ const supabaseKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY
           </div>
         )}
       </div>
-      <a
-        href={project.url}
-        class='inline-flex items-center gap-2 bg-foreground px-5 py-2.5 text-sm font-semibold text-background shadow-sm transition hover:-translate-y-0.5 hover:bg-foreground/90'
-      >
-        Try It →
-      </a>
+      <div class='flex flex-col gap-2 sm:flex-row'>
+        {project.hubUrl && (
+          <a
+            href={project.hubUrl}
+            class='inline-flex items-center gap-2 border border-sky-500 bg-sky-50 px-5 py-2.5 text-sm font-semibold text-sky-700 shadow-sm transition hover:-translate-y-0.5 hover:bg-sky-100 dark:bg-sky-500/10 dark:text-sky-400 dark:hover:bg-sky-500/20'
+          >
+            Project Docs
+          </a>
+        )}
+        <a
+          href={project.url}
+          class='inline-flex items-center gap-2 bg-foreground px-5 py-2.5 text-sm font-semibold text-background shadow-sm transition hover:-translate-y-0.5 hover:bg-foreground/90'
+        >
+          Try It →
+        </a>
+      </div>
     </div>
   </div>
 ) : (

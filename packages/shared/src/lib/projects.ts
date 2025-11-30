@@ -22,11 +22,13 @@ export interface Project {
   id: string
   name: string
   url: string
+  hubUrl?: string // URL to project hub page (e.g., /projects/ab-simulator)
   status: ProjectStatus
   description: string
   shortDescription: string
   tags: ProjectTag[]
   stats?: ProjectStats
+  aiStory?: string[] // Bullets describing how AI helped build this project
 }
 
 // Status badge configuration

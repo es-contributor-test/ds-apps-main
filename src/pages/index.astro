@@ -19,22 +19,20 @@ const socialData = yaml.load(socialLinksYaml) as {
 }
 const socialLinks = socialData.socialLinks
 
-// Load build log data for stats
-import buildLogData from '@/data/build-log-data.json'
-const totalContributors = buildLogData.contributors?.length ?? 0
-const openTasks = buildLogData.tasks?.filter((t: any) => t.status === 'open').length ?? 0
-const closedTasks = buildLogData.tasks?.filter((t: any) => t.status === 'merged').length ?? 0
-
 // Load projects
-import { parseProjectsYaml } from '../../packages/shared/src/lib/projects'
+import { parseProjectsYaml, getLiveProjects, getProjectsByStatus } from '../../packages/shared/src/lib/projects'
 import projectsYaml from '../../packages/shared/src/data/projects.yaml?raw'
 import ProjectCard from '../../packages/shared/src/components/ProjectCard.astro'
-const projects = parseProjectsYaml(projectsYaml)
+import Timeline from '../../packages/shared/src/components/Timeline.astro'
+const allProjects = parseProjectsYaml(projectsYaml)
+const liveProjects = getLiveProjects(allProjects)
+const inProgressProjects = getProjectsByStatus(allProjects, 'in-progress')
+const upcomingProjects = getProjectsByStatus(allProjects, 'coming-soon')
 ---
 
 <PageLayout meta={{ title: 'Home' }}>
 	<div class='flex w-full flex-col'>
-		
+
 		<!-- ============================================ -->
 		<!-- HERO: Compact horizontal card                -->
 		<!-- ============================================ -->
@@ -104,37 +102,39 @@ const projects = parseProjectsYaml(projectsYaml)
 				As a leader, I can't ask my team to embrace new tools and workflows if I haven't experienced the learning curve myself. I build in my personal time—not to replace engineers, but to understand the tradeoffs firsthand. It makes me a better collaborator and a more credible leader.
 			</p>
 			<div class='space-y-3'>
-				{projects.map((project) => (
+				{liveProjects.map((project) => (
 					<ProjectCard project={project} variant='compact' />
 				))}
 			</div>
 		</section>
 
 		<!-- ============================================ -->
-		<!-- BUILD WITH ME                                -->
+		<!-- WHAT'S NEXT - VERTICAL TIMELINE              -->
+		<!-- ============================================ -->
+		<div class='mt-8'>
+			<Timeline 
+				inProgressProjects={inProgressProjects} 
+				upcomingProjects={upcomingProjects} 
+			/>
+		</div>
+
+		<!-- ============================================ -->
+		<!-- FOLLOW THE BUILD                             -->
 		<!-- ============================================ -->
 		<section class='mt-8 space-y-4'>
-			<h2 class='text-2xl font-bold text-foreground'>Build With Me</h2>
-			<p class='text-base text-muted-foreground'>These projects are hard. I do them in my personal time, leveraging AI workflows. Students in CS/DS or young pros interested in learning—join in, build, and teach me something in return.</p>
+			<h2 class='text-2xl font-bold text-foreground'>Follow the Build</h2>
+			<p class='text-base text-muted-foreground'>Solo project, built in public. Curious? Follow along or jump in.</p>
 			
 			<div class='border border-border bg-background p-4 transition hover:border-foreground/30 hover:shadow-sm'>
 				<div class='flex items-center justify-between gap-3'>
-					<div class='flex flex-wrap gap-3'>
-						<span class='text-base text-muted-foreground'>
-							<span class='font-semibold text-foreground tabular-nums'>{totalContributors}</span> contributors
-						</span>
-						<span class='text-base text-muted-foreground'>
-							<span class='font-semibold text-foreground tabular-nums'>{openTasks}</span> open issues
-						</span>
-						<span class='text-base text-muted-foreground'>
-							<span class='font-semibold text-foreground tabular-nums'>{closedTasks}</span> closed issues
-						</span>
-					</div>
+					<p class='text-sm text-muted-foreground'>
+						See what I'm working on, browse open issues, or claim a task.
+					</p>
 					<a
 						href='/contribute/'
 						class='inline-flex shrink-0 items-center gap-1 bg-foreground px-3 py-1.5 text-xs font-semibold text-background shadow-sm transition hover:-translate-y-0.5 hover:bg-foreground/90'
 					>
-						See Open Tasks →
+						Build With Me →
 					</a>
 				</div>
 			</div>

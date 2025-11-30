@@ -6,6 +6,7 @@ draft: true
 featured: true
 category: technical
 tags: ['engineering', 'analytics', 'astro', 'supabase']
+projectId: ab-simulator
 ---
 
 I never intended to build a memory game.

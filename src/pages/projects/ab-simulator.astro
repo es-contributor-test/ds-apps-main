@@ -1,0 +1,197 @@
+---
+/**
+ * Project Hub Page: A/B Testing Memory Game
+ * 
+ * The shareable "portfolio piece" with:
+ * - Hero + Play Game CTA
+ * - Live stats from Supabase
+ * - AI Story (how AI helped build this)
+ * - Related content (posts with projectId: ab-simulator)
+ */
+import PageLayout from '../../layouts/BaseLayout.astro'
+import Section from '../../components/Section.astro'
+import { Icon } from 'astro-icon/components'
+
+import { parseProjectsYaml } from '../../../packages/shared/src/lib/projects'
+import projectsYaml from '../../../packages/shared/src/data/projects.yaml?raw'
+import { getPostsByProject } from '../../lib/posts'
+
+// Get project data
+const allProjects = parseProjectsYaml(projectsYaml)
+const project = allProjects.find(p => p.id === 'ab-simulator')
+
+if (!project) {
+  throw new Error('Project ab-simulator not found in projects.yaml')
+}
+
+// Get related posts
+const relatedPosts = await getPostsByProject('ab-simulator')
+
+// Supabase config for client-side stats
+const supabaseUrl = import.meta.env.PUBLIC_SUPABASE_URL
+const supabaseKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY
+---
+
+<PageLayout meta={{ title: project.name, description: project.description }}>
+  <div class='flex w-full flex-col gap-y-10'>
+    
+    <!-- Hero -->
+    <section class='border border-border bg-primary-foreground p-8 shadow-lg shadow-black/5'>
+      <div class='flex flex-col gap-6'>
+        <div class='space-y-3'>
+          <div class='flex items-center gap-3'>
+            <span class='inline-flex items-center gap-1.5 rounded-full bg-emerald-100 px-3 py-1 text-sm font-semibold text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-300'>
+              <span class='h-2 w-2 rounded-full bg-emerald-500'></span>
+              Live
+            </span>
+          </div>
+          <h1 class='text-3xl font-bold text-foreground sm:text-4xl'>{project.name}</h1>
+          <p class='max-w-2xl text-lg text-muted-foreground'>{project.description}</p>
+        </div>
+        
+        <div class='flex flex-wrap gap-2'>
+          {project.tags.map((tag) => (
+            <span class='bg-muted px-3 py-1 text-sm font-medium text-muted-foreground'>
+              {tag.name}
+            </span>
+          ))}
+        </div>
+        
+        <a
+          href={project.url}
+          class='inline-flex w-fit items-center gap-2 bg-foreground px-6 py-3 text-base font-semibold text-background shadow-sm transition hover:-translate-y-0.5 hover:bg-foreground/90'
+        >
+          Play the Game →
+        </a>
+      </div>
+    </section>
+
+    <!-- Live Stats -->
+    <Section title='What We Learned'>
+      <div 
+        class='project-hub-stats grid gap-4 sm:grid-cols-3'
+        data-supabase-url={supabaseUrl}
+        data-supabase-key={supabaseKey}
+      >
+        <div class='border border-border bg-background p-4'>
+          <div class='text-3xl font-bold text-foreground tabular-nums' data-stat='games_played'>—</div>
+          <div class='text-sm text-muted-foreground'>games played</div>
+        </div>
+        <div class='border border-border bg-background p-4'>
+          <div class='text-3xl font-bold text-foreground tabular-nums' data-stat='completion_rate'>—</div>
+          <div class='text-sm text-muted-foreground'>completion rate</div>
+        </div>
+        <div class='border border-border bg-background p-4'>
+          <div class='text-3xl font-bold text-foreground tabular-nums' data-stat='winning_variant'>—</div>
+          <div class='text-sm text-muted-foreground'>winning variant</div>
+        </div>
+      </div>
+      <p class='mt-4 text-sm text-muted-foreground'>
+        Real data from live experiments. Stats update as visitors play.
+      </p>
+    </Section>
+
+    <!-- AI Story -->
+    {project.aiStory && project.aiStory.length > 0 && (
+      <Section title='How AI Helped Build This'>
+        <ul class='space-y-3'>
+          {project.aiStory.map((bullet) => (
+            <li class='flex items-start gap-3'>
+              <Icon name='mdi:robot-outline' class='mt-0.5 h-5 w-5 shrink-0 text-muted-foreground' />
+              <span class='text-muted-foreground'>{bullet}</span>
+            </li>
+          ))}
+        </ul>
+      </Section>
+    )}
+
+    <!-- Related Content -->
+    {relatedPosts.length > 0 && (
+      <Section title='Related Content'>
+        <div class='space-y-3'>
+          {relatedPosts.map((post) => (
+            <a 
+              href={`/writing/${post.slug}`}
+              class='flex items-center justify-between border border-border bg-background p-4 transition hover:border-foreground/30 hover:shadow-sm'
+            >
+              <div class='space-y-1'>
+                <h3 class='font-medium text-foreground'>{post.data.title}</h3>
+                <p class='text-sm text-muted-foreground'>{post.data.description}</p>
+              </div>
+              <span class='shrink-0 text-sm text-muted-foreground'>Read →</span>
+            </a>
+          ))}
+        </div>
+      </Section>
+    )}
+
+    {relatedPosts.length === 0 && (
+      <Section title='Related Content'>
+        <p class='text-muted-foreground'>Analysis post coming soon.</p>
+      </Section>
+    )}
+
+    <!-- Play Again CTA -->
+    <section class='border border-dashed border-border p-6 text-center'>
+      <p class='mb-4 text-muted-foreground'>Ready to run your own experiment?</p>
+      <a
+        href={project.url}
+        class='inline-flex items-center gap-2 bg-foreground px-6 py-3 text-base font-semibold text-background shadow-sm transition hover:-translate-y-0.5 hover:bg-foreground/90'
+      >
+        Play Again →
+      </a>
+    </section>
+
+  </div>
+</PageLayout>
+
+<script>
+  // Hydrate stats on load
+  document.addEventListener('DOMContentLoaded', async () => {
+    const container = document.querySelector('.project-hub-stats')
+    if (!container) return
+    
+    const supabaseUrl = container.getAttribute('data-supabase-url')
+    const supabaseKey = container.getAttribute('data-supabase-key')
+    
+    if (!supabaseUrl || !supabaseKey) {
+      console.debug('Supabase not configured, skipping stats')
+      return
+    }
+    
+    try {
+      const response = await fetch(
+        `${supabaseUrl}/rest/v1/v_project_stats?project_id=eq.ab-simulator&select=*`,
+        {
+          headers: {
+            'apikey': supabaseKey,
+            'Authorization': `Bearer ${supabaseKey}`
+          }
+        }
+      )
+      
+      if (!response.ok) throw new Error('Failed to fetch stats')
+      
+      const rows = await response.json()
+      const data = rows[0]
+      if (!data) return
+      
+      // Update stats
+      const gamesEl = container.querySelector('[data-stat="games_played"]')
+      const completionEl = container.querySelector('[data-stat="completion_rate"]')
+      const winningEl = container.querySelector('[data-stat="winning_variant"]')
+      
+      if (gamesEl && data.games_played !== undefined) {
+        gamesEl.textContent = data.games_played.toLocaleString()
+      }
+      if (completionEl && data.completion_rate !== undefined) {
+        completionEl.textContent = `${data.completion_rate}%`
+      }
+      if (winningEl && data.winning_variant !== undefined) {
+        winningEl.textContent = data.winning_variant
+      }
+    } catch (error) {
+      console.debug('Could not load project stats:', error)
+    }
+  })
+</script>
