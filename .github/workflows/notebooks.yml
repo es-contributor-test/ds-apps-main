@@ -14,6 +14,10 @@ on:
 env:
   PYTHON_VERSION: '3.11'
 
+# Grant write permission to commit notebook outputs
+permissions:
+  contents: write
+
 jobs:
   discover-notebooks:
     runs-on: ubuntu-latest
