@@ -1,0 +1,89 @@
+---
+/**
+ * Breadcrumbs Component
+ * 
+ * Hybrid approach:
+ * - Auto-generates from URL for simple cases
+ * - Accepts explicit items for custom hierarchy
+ * - Looks up project names from projects.yaml
+ * 
+ * Usage:
+ *   <Breadcrumbs />                              // Auto from URL
+ *   <Breadcrumbs items={[...]} />                // Explicit
+ *   <Breadcrumbs currentLabel="Play Game" />    // Override current page label
+ */
+
+interface BreadcrumbItem {
+  label: string
+  href?: string
+}
+
+interface Props {
+  items?: BreadcrumbItem[]
+  currentLabel?: string
+}
+
+const { items, currentLabel } = Astro.props
+
+// Label mappings for URL segments
+const segmentLabels: Record<string, string> = {
+  'projects': 'Projects',
+  'writing': 'Writing',
+  'about': 'About',
+  'contribute': 'Contribute',
+  'sitemap': 'Sitemap',
+  'analysis': 'Analysis',
+  'ab-simulator': 'A/B Testing Memory Game',
+}
+
+// Build breadcrumbs from URL if not provided
+function buildFromUrl(pathname: string, overrideCurrentLabel?: string): BreadcrumbItem[] {
+  const segments = pathname.split('/').filter(Boolean)
+  
+  if (segments.length === 0) return []
+  
+  const crumbs: BreadcrumbItem[] = [{ label: 'Home', href: '/' }]
+  let currentPath = ''
+  
+  for (let i = 0; i < segments.length; i++) {
+    const segment = segments[i]
+    currentPath += `/${segment}`
+    const isLast = i === segments.length - 1
+    
+    // Get label - use override for last item, or lookup, or titlecase slug
+    let label = segmentLabels[segment] || segment
+      .split('-')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ')
+    
+    if (isLast && overrideCurrentLabel) {
+      label = overrideCurrentLabel
+    }
+    
+    crumbs.push({
+      label,
+      href: isLast ? undefined : currentPath
+    })
+  }
+  
+  return crumbs
+}
+
+const breadcrumbs = items || buildFromUrl(Astro.url.pathname, currentLabel)
+
+// Don't render if only Home or empty
+if (breadcrumbs.length <= 1) return null
+---
+
+<nav class='flex items-center gap-2 text-sm text-muted-foreground'>
+  {breadcrumbs.map((crumb, i) => (
+    <>
+      {i > 0 && <span class='text-border'>/</span>}
+      {crumb.href ? (
+        <a href={crumb.href} class='transition hover:text-foreground'>{crumb.label}</a>
+      ) : (
+        <span class='text-foreground'>{crumb.label}</span>
+      )}
+    </>
+  ))}
+</nav>

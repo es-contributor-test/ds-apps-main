@@ -1,17 +1,15 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro'
+import Breadcrumbs from '../../../packages/shared/src/components/Breadcrumbs.astro'
 
 const lastUpdated = 'November 30, 2025'
 ---
 
 <BaseLayout meta={{ title: 'Build With Me' }}>
   <div class="flex w-full flex-col gap-y-4">
-    <!-- Back link -->
-    <a href="/" class="no-underline text-sm text-muted-foreground hover:text-foreground transition inline-flex items-center gap-1">
-      ← Back to Home
-    </a>
+    <Breadcrumbs currentLabel="Contribute" />
 
-    <h1 class="text-2xl font-bold">Build With Me</h1>
+    <h1 class="text-2xl font-bold mt-4">Build With Me</h1>
     
     <blockquote class="border-l-4 border-slate-300 dark:border-slate-600 pl-4 italic text-muted-foreground not-italic">
       This is a living document. <strong>Last updated: {lastUpdated}</strong>

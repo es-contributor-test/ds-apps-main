@@ -1,6 +1,7 @@
 ---
 import SiteLayout from '../../../shared/src/layouts/SiteLayout.astro'
 import ConnectionStatus from '../../../shared/src/components/ConnectionStatus.astro'
+import Breadcrumbs from '../../../shared/src/components/Breadcrumbs.astro'
 ---
 
 <SiteLayout meta={{ title: 'A/B Test Simulator' }}>
@@ -8,12 +9,12 @@ import ConnectionStatus from '../../../shared/src/components/ConnectionStatus.as
 		<!-- Nav Bar -->
 		<div class='flex items-center justify-between border-b border-border pb-4'>
 			<div class='flex items-center gap-4'>
-				<a 
-					href='/projects/ab-simulator' 
-					class='flex items-center gap-1 text-sm text-muted-foreground transition hover:text-foreground'
-				>
-					← Back
-				</a>
+				<Breadcrumbs items={[
+					{ label: 'Home', href: '/' },
+					{ label: 'Projects', href: '/projects' },
+					{ label: 'A/B Testing Memory Game', href: '/projects/ab-simulator' },
+					{ label: 'Play' }
+				]} />
 				<ConnectionStatus />
 			</div>
 			<a

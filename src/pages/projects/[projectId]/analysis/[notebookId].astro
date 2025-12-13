@@ -9,6 +9,7 @@
  */
 import PageLayout from '../../../../layouts/BaseLayout.astro'
 import Section from '../../../../components/Section.astro'
+import Breadcrumbs from '../../../../../packages/shared/src/components/Breadcrumbs.astro'
 import { Icon } from 'astro-icon/components'
 
 import { parseProjectsYaml } from '../../../../../packages/shared/src/lib/projects'
@@ -71,14 +72,12 @@ const githubNotebookUrl = `https://github.com/eeshansrivastava89/ds-apps-main/bl
 }}>
   <div class='flex w-full flex-col gap-y-8'>
     
-    <!-- Breadcrumb -->
-    <nav class='flex items-center gap-2 text-sm text-muted-foreground'>
-      <a href='/projects' class='hover:text-foreground'>Projects</a>
-      <span>/</span>
-      <a href={project.hubUrl || `/projects/${project.id}`} class='hover:text-foreground'>{project.name}</a>
-      <span>/</span>
-      <span class='text-foreground'>Analysis</span>
-    </nav>
+    <Breadcrumbs items={[
+      { label: 'Home', href: '/' },
+      { label: 'Projects', href: '/projects' },
+      { label: project.name, href: project.hubUrl || `/projects/${project.id}` },
+      { label: 'Analysis' }
+    ]} />
 
     <!-- Header -->
     <header class='space-y-4'>

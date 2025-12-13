@@ -2,6 +2,7 @@
 import PageLayout from '../layouts/BaseLayout.astro'
 import Section from '../components/Section.astro'
 import WorkTimeline from '../components/WorkTimeline.astro'
+import Breadcrumbs from '../../packages/shared/src/components/Breadcrumbs.astro'
 
 import { parseProjectsYaml, getLiveProjects } from '../../packages/shared/src/lib/projects'
 import projectsYaml from '../../packages/shared/src/data/projects.yaml?raw'
@@ -22,6 +23,7 @@ const liveProjects = getLiveProjects(allProjects)
 
 <PageLayout meta={{ title: 'About' }}>
 	<div class='flex w-full flex-col gap-y-10'>
+		<Breadcrumbs currentLabel="About" />
 		<Section title='About'>
 			<p class='text-muted-foreground'>
 				I sit at an unusual intersection: <strong>Computer Science</strong> by training, <strong>Data Science</strong> by profession, <strong>MBA</strong> by transformation.

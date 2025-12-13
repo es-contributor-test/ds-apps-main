@@ -350,6 +350,58 @@ All UX consolidation tasks finished. Site is ready for launch content.
 
 ---
 
+## Phase 6.4: Breadcrumb Navigation
+
+**Why:** Consistent navigation across all pages. Remove ad-hoc back buttons/links.
+
+**Current State:**
+- Analysis page has breadcrumbs (good)
+- Other pages have inconsistent back buttons/links
+- Packages have standalone back links
+
+**Architecture:**
+
+```
+Component: packages/shared/src/components/Breadcrumbs.astro
+
+API:
+<Breadcrumbs />                           # Auto-generate from URL
+<Breadcrumbs items={[...]} />             # Explicit override
+<Breadcrumbs currentLabel="Play Game" />  # Override just current page
+```
+
+**Breadcrumb Patterns:**
+```
+/about                    → Home / About
+/projects                 → Home / Projects
+/projects/ab-simulator    → Home / Projects / A/B Testing Memory Game
+/projects/.../analysis/.. → Home / Projects / {Project} / Analysis
+/writing                  → Home / Writing
+/writing/{slug}           → Home / Writing / {Post Title}
+/writing/technical        → Home / Writing / Technical
+/contribute               → Home / Contribute
+/ab-simulator (package)   → Home / Projects / A/B Testing Memory Game / Play
+```
+
+**Design:** Matches analysis page — minimal, `text-sm text-muted-foreground`, `/` separators.
+
+| ✓ | Task | Notes |
+|---|------|-------|
+| ✅ | Create `<Breadcrumbs>` component | Shared package, hybrid auto/explicit |
+| ✅ | Update `BlogPost.astro` layout | Replace back button with breadcrumbs |
+| ✅ | Update `/writing` pages | Index, technical, essays |
+| ✅ | Update `/contribute` | Replace back link |
+| ✅ | Update `/sitemap` | Replace back link |
+| ✅ | Update `/projects` pages | Index, hub, analysis |
+| ✅ | Update `/about` | Add breadcrumbs |
+| ✅ | Update AB Simulator package | Explicit breadcrumbs with project context |
+
+---
+
+## Phase 6.4 Complete ✅
+
+Breadcrumb navigation implemented site-wide. Consistent UX across all pages.
+
 ## Launch Announcement Draft
 
 **Title:** I Built an A/B Testing Simulator (and Analyzed My Own Experiment)

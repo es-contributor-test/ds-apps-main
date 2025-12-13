@@ -5,6 +5,7 @@
  */
 import PageLayout from '../../layouts/BaseLayout.astro'
 import Section from '../../components/Section.astro'
+import Breadcrumbs from '../../../packages/shared/src/components/Breadcrumbs.astro'
 
 import { parseProjectsYaml, getLiveProjects, getProjectsByStatus } from '../../../packages/shared/src/lib/projects'
 import projectsYaml from '../../../packages/shared/src/data/projects.yaml?raw'
@@ -19,6 +20,7 @@ const upcomingProjects = getProjectsByStatus(allProjects, 'coming-soon')
 
 <PageLayout meta={{ title: 'Projects' }}>
 	<div class='flex w-full flex-col gap-y-10'>
+		<Breadcrumbs currentLabel="Projects" />
 		<Section title='Projects'>
 			<p class='text-muted-foreground'>
 				Interactive tools built end-to-end with AI assistance. Each project is a learning lab — 

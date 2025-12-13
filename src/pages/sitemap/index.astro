@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro'
+import Breadcrumbs from '../../../packages/shared/src/components/Breadcrumbs.astro'
 import { getCollection } from 'astro:content'
 
 // Get all posts
@@ -91,10 +92,7 @@ const totalPages = countNodes(siteTree)
 
 <BaseLayout meta={{ title: 'Visual Sitemap', description: 'Complete site structure and navigation' }}>
   <article class="max-w-3xl mx-auto">
-    <!-- Back link -->
-    <a href="/" class="no-underline text-sm text-muted-foreground hover:text-foreground transition inline-flex items-center gap-1 mb-6">
-      ← Back to Home
-    </a>
+    <Breadcrumbs currentLabel="Sitemap" />
 
     <div class="mb-8">
       <h1 class="text-2xl font-bold mb-2 flex items-center gap-3">
