@@ -1,0 +1,87 @@
+title: "New Data Science Web App Proposal"
+labels: ["enhancement", "project:build-with-me"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for proposing a new DS web app! Please fill out the details below.
+        
+  - type: input
+    id: project-name
+    attributes:
+      label: Project Name
+      description: Short, memorable name for the app
+      placeholder: "e.g., Prompt Debugger, Data Story Generator"
+    validations:
+      required: true
+      
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: What does this app do? What problem does it solve?
+      placeholder: "A tool that helps data scientists..."
+    validations:
+      required: true
+      
+  - type: textarea
+    id: user-story
+    attributes:
+      label: User Story
+      description: Who uses this and how?
+      placeholder: |
+        As a [role], I want to [action] so that [benefit].
+    validations:
+      required: true
+      
+  - type: dropdown
+    id: complexity
+    attributes:
+      label: Estimated Complexity
+      options:
+        - "Small (1-2 days) - single page, simple logic"
+        - "Medium (3-5 days) - multiple pages, some backend"
+        - "Large (1-2 weeks) - full app with analytics pipeline"
+    validations:
+      required: true
+      
+  - type: checkboxes
+    id: infrastructure
+    attributes:
+      label: Infrastructure Needed
+      description: What shared infrastructure will you use?
+      options:
+        - label: "PostHog analytics (shared project, namespaced events)"
+        - label: "Supabase database (you create your own free tier)"
+        - label: "Auto-rendered Jupyter notebook for analysis"
+        - label: "None - static frontend only"
+        
+  - type: textarea
+    id: tech-stack
+    attributes:
+      label: Proposed Tech Stack
+      description: What technologies do you plan to use?
+      placeholder: |
+        - Frontend: React/Astro
+        - Backend: Supabase
+        - Viz: Plotly/Chart.js
+    validations:
+      required: false
+      
+  - type: textarea
+    id: mockup
+    attributes:
+      label: Mockup / Sketch (optional)
+      description: Paste an image or link to a rough mockup
+    validations:
+      required: false
+      
+  - type: checkboxes
+    id: commitment
+    attributes:
+      label: Commitment
+      options:
+        - label: "I'm ready to build this if approved"
+          required: true
+        - label: "I've read the contribute page and understand the workflow"
+          required: true
