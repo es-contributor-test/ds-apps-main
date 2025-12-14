@@ -186,7 +186,7 @@ function updateMemorizePill(state = 'idle', { text, countdown } = {}) {
 
 function resetMemorizePill() {
 	updateMemorizePill('idle', {
-		text: 'Click Start to reveal the board.',
+		text: 'Memorize Time',
 		countdown: `${MEMORIZE_DURATION_SECONDS}s`
 	})
 }
@@ -277,8 +277,8 @@ function buildGrid(config) {
 			row
 				.map(
 					(fruit, colIndex) =>
-						`<div class="aspect-square rounded-lg bg-gray-100 flex items-center justify-center cursor-pointer transition-all duration-300 relative overflow-hidden memory-tile border-2 border-gray-300 hover:!bg-orange-100 hover:!border-orange-600 hover:scale-105" data-row="${rowIndex}" data-col="${colIndex}" data-fruit="${fruit}">
-          <span class="text-2xl transition-all duration-300 fruit-emoji opacity-0 scale-80">${fruit}</span>
+						`<div class="aspect-square w-14 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center cursor-pointer transition-all duration-300 relative overflow-hidden memory-tile border-2 border-slate-300 dark:border-slate-600 hover:!bg-amber-100 hover:!border-amber-500 hover:scale-105 dark:hover:!bg-amber-500/20" data-row="${rowIndex}" data-col="${colIndex}" data-fruit="${fruit}">
+          <span class="text-3xl transition-all duration-300 fruit-emoji opacity-0 scale-80">${fruit}</span>
         </div>`
 				)
 				.join('')
@@ -295,7 +295,7 @@ function showMemorizePhase() {
 	forEachMemoryTile((tile) => setTileState(tile, 'memorize'))
 	DOM.startButton()?.classList.add('hidden')
 	updateMemorizePill('memorizing', {
-		text: 'Memorize every pineapple location.',
+		text: 'Memorizing...',
 		countdown: MEMORIZE_DURATION_SECONDS
 	})
 }
@@ -323,7 +323,6 @@ function displayVariant() {
 	if (!variant) {
 		$('user-variant').textContent = 'Error'
 		$('user-username').textContent = 'Feature flag failed'
-		$('difficulty-display').textContent = 'Check PostHog config'
 		$('target-word-count').textContent = '0'
 		return
 	}
@@ -333,7 +332,6 @@ function displayVariant() {
 	puzzleState.puzzleConfig = config
 	$('user-variant').textContent = `Variant ${variant} | ${config.id}`
 	$('user-username').textContent = username || 'Loading...'
-	$('difficulty-display').textContent = `Difficulty: ${config.difficulty}/10`
 	$('target-word-count').textContent = config.targetCount
 	buildPineappleProgress(config.targetCount)
 	resetMemorizePill()
@@ -407,7 +405,7 @@ function startGamePhase() {
 	puzzleState.startTime = Date.now()
 	hideFruits()
 	updateMemorizePill('hunting', {
-		text: 'Find every pineapple before the clock hits zero.',
+		text: 'Find them!',
 		countdown: 'GO!'
 	})
 	setGridPulse(true)

@@ -3,76 +3,72 @@ import AppLayout from '../../../shared/src/layouts/AppLayout.astro'
 ---
 
 <AppLayout projectId="ab-simulator" showDescription={false}>
-	<!-- Custom Description (more detailed than projects.yaml) -->
-	<div class='-mt-4 mb-4'>
-		<p class='text-base text-muted-foreground'>
-			Interactive memory game puzzle demonstrating A/B testing with PostHog experiments and
-			real-time analytics.
-			<br />I built this from scratch using a full analytics stack with Astro front‑end → Supabase
-			PostgREST (SQL views/RPCs) → PostHog events → Supabase Webhooks → Plotly charts on Astro. My
-			goal is to show not just what experimentation means from a statistical POV, but also from a
-			tech implementation and user experience POV.
-		</p>
-	</div>
-
-	<!-- Challenge Info -->
-	<div id='challenge-section' class='rounded-lg border bg-card p-4'>
-		<h3 class='mb-3 font-semibold'>Your Challenge</h3>
-		<div class='grid grid-cols-2 gap-3 md:grid-cols-4'>
-			<div class='text-sm'>
-				<div class='text-xs text-muted-foreground'>Variant</div>
-				<div id='user-variant' class='font-mono font-bold'>Loading...</div>
+	<!-- Hero Value Prop - 3 Column + Your Assignment -->
+	<div class='-mt-4 mb-6 overflow-hidden rounded-2xl border-2 border-slate-200 bg-gradient-to-br from-slate-50 via-white to-amber-50/50 shadow-lg dark:border-slate-700 dark:from-slate-900 dark:via-slate-900 dark:to-amber-950/20'>
+		<div class='grid divide-y md:grid-cols-3 md:divide-x md:divide-y-0 divide-slate-200 dark:divide-slate-700'>
+			<!-- Col 1: You're in the experiment -->
+			<div class='flex flex-col items-center gap-3 p-6 text-center'>
+				<div class='flex h-14 w-14 items-center justify-center rounded-2xl bg-amber-100 text-3xl dark:bg-amber-500/20'>🎲</div>
+				<div class='text-xl font-bold text-slate-900 dark:text-white'>You're in the Experiment</div>
+				<p class='text-base text-slate-600 dark:text-slate-400'>
+					Randomly assigned to <strong class='text-amber-600 dark:text-amber-400'>Variant A</strong> or <strong class='text-orange-600 dark:text-orange-400'>Variant B</strong> with different difficulty levels.
+				</p>
 			</div>
-			<div class='text-sm'>
-				<div class='text-xs text-muted-foreground'>Your Random Username</div>
-					<div id='user-username' class='truncate font-mono'>Loading...</div>
-				</div>
-				<div class='text-sm'>
-					<div class='text-xs text-muted-foreground'>Difficulty</div>
-					<div id='difficulty-display' class='font-mono'>Loading...</div>
-				</div>
-				<div class='text-sm'>
-					<div class='text-xs text-muted-foreground'>No. of Pineapples to Find</div>
-					<div id='target-word-count' class='font-mono font-bold'>0</div>
-				</div>
+			<!-- Col 2: Play the game -->
+			<div class='flex flex-col items-center gap-3 p-6 text-center'>
+				<div class='flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-100 text-3xl dark:bg-emerald-500/20'>🎮</div>
+				<div class='text-xl font-bold text-slate-900 dark:text-white'>Play the Memory Game</div>
+				<p class='text-base text-slate-600 dark:text-slate-400'>
+					Memorize pineapple locations, then find them all. Your completion time is tracked.
+				</p>
+			</div>
+			<!-- Col 3: Watch results -->
+			<div class='flex flex-col items-center gap-3 p-6 text-center'>
+				<div class='flex h-14 w-14 items-center justify-center rounded-2xl bg-sky-100 text-3xl dark:bg-sky-500/20'>📊</div>
+				<div class='text-xl font-bold text-slate-900 dark:text-white'>See Real-Time Results</div>
+				<p class='text-base text-slate-600 dark:text-slate-400'>
+					Live analytics dashboard below. Deep-dive in <a href='/projects/ab-simulator' class='whitespace-nowrap font-semibold text-sky-600 underline decoration-sky-300 underline-offset-2 hover:text-sky-700 dark:text-sky-400 dark:decoration-sky-600 dark:hover:text-sky-300'>Project&nbsp;Docs&nbsp;→</a>
+				</p>
 			</div>
 		</div>
+		<!-- Your Assignment Bar -->
+		<div id='challenge-section' class='flex flex-wrap items-center justify-center gap-x-8 gap-y-3 border-t border-slate-200 bg-slate-100/80 px-6 py-4 dark:border-slate-700 dark:bg-slate-800/50'>
+			<div class='flex items-center gap-2'>
+				<span class='text-sm font-medium text-slate-500 dark:text-slate-400'>Variant:</span>
+				<span id='user-variant' class='rounded-lg bg-white px-3 py-1 font-mono text-sm font-bold shadow-sm dark:bg-slate-900'>Loading...</span>
+			</div>
+			<div class='flex items-center gap-2'>
+				<span class='text-sm font-medium text-slate-500 dark:text-slate-400'>Username:</span>
+				<span id='user-username' class='max-w-[180px] truncate rounded-lg bg-white px-3 py-1 font-mono text-sm shadow-sm dark:bg-slate-900'>Loading...</span>
+			</div>
+			<div class='flex items-center gap-2'>
+				<span class='text-sm font-medium text-slate-500 dark:text-slate-400'>Find:</span>
+				<span class='flex items-center gap-1 rounded-lg bg-white px-3 py-1 font-mono text-sm font-bold shadow-sm dark:bg-slate-900'>
+					<span id='target-word-count'>0</span>
+					<span>🍍</span>
+				</span>
+			</div>
+		</div>
+	</div>
 
 		<!-- Puzzle Section -->
 		<div id='puzzle-section' class='space-y-4 rounded-2xl border bg-card/95 p-4'>
-			<div class='flex flex-col gap-3'>
-				<h3 class='font-semibold'>MEMORY GAME: Find the Pineapples 🍍.</h3>
-				<p class='text-sm text-muted-foreground'>
-					Click Start to reveal the board, memorize all pineapples in 10 seconds, then find them
-					before the timer expires.
-				</p>
-			</div>
+			<h3 class='text-lg font-semibold'>Memorize the pineapple locations, then find them all 🍍</h3>
 
 			<!-- Three-column layout: Grid (1/3) + Controls/Progress (1/3) + Stats (1/3) -->
 			<div class='grid gap-6 md:grid-cols-2 xl:grid-cols-3'>
-				<!-- LEFT: Letter Grid with sticky guidance pill -->
-				<div class='space-y-4'>
-					<div class='space-y-2'>
-						<div id='memorize-pill' class='memorize-pill' data-state='idle'>
-							<div
-								class='flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.3em] text-muted-foreground'
-							>
-								<span class='text-base'>🍍</span>
-								<span id='memorize-pill-text'>Click Start to reveal the board.</span>
-							</div>
-							<div class='flex items-center gap-2 text-sm'>
-								<span class='text-muted-foreground'
-									>You get <strong>7 seconds</strong> to memorize.</span
-								>
-								<span id='memorize-countdown' class='memorize-countdown' aria-live='polite'>7s</span
-								>
-							</div>
+				<!-- LEFT: Letter Grid with countdown pill -->
+				<div class='space-y-3'>
+					<div id='memorize-pill' class='memorize-pill' data-state='idle'>
+						<div class='flex items-center justify-between'>
+							<span id='memorize-pill-text' class='text-sm font-medium text-slate-600 dark:text-slate-300'>Memorize Time</span>
+							<div id='memorize-countdown' class='memorize-countdown' aria-live='polite'>7s</div>
 						</div>
-						<div
-							id='letter-grid'
-							class='grid max-w-[320px] grid-cols-5 gap-4 rounded-2xl border-2 border-transparent p-2 transition-all duration-300'
-						>
-						</div>
+					</div>
+					<div
+						id='letter-grid'
+						class='grid grid-cols-5 gap-2 rounded-2xl border-2 border-transparent p-1 transition-all duration-300'
+					>
 					</div>
 				</div>
 
@@ -95,17 +91,15 @@ import AppLayout from '../../../shared/src/layouts/AppLayout.astro'
 								>Try Again</button
 							>
 						</div>
-						<div class='grid grid-cols-3 items-center rounded-lg bg-card p-3'>
-							<div class='text-xs text-muted-foreground'>Time</div>
-							<div id='timer' class='col-span-2 font-mono text-2xl font-bold'>00:60:00</div>
+						<div class='flex items-center justify-between rounded-xl bg-card px-4 py-3'>
+							<div class='text-sm font-medium text-muted-foreground'>Time</div>
+							<div id='timer' class='font-mono text-3xl font-bold tabular-nums tracking-tight'>00:60:00</div>
 						</div>
 					</div>
 					<div class='pineapple-progress' aria-live='polite'>
-						<div
-							class='flex items-center justify-between text-xs font-semibold uppercase tracking-[0.3em] text-muted-foreground'
-						>
-							<span>Pineapple Tracker</span>
-							<span class='text-[11px]'>
+						<div class='flex items-center justify-between'>
+							<span class='text-xs font-bold uppercase tracking-widest text-slate-600 dark:text-slate-300'>Pineapple Tracker</span>
+							<span class='font-mono text-sm font-semibold tabular-nums text-slate-700 dark:text-slate-200'>
 								<span id='pineapple-progress-found'>0</span>/<span id='pineapple-target'>0</span>
 							</span>
 						</div>
@@ -133,15 +127,13 @@ import AppLayout from '../../../shared/src/layouts/AppLayout.astro'
 				<!-- RIGHT: Leaderboard (1/3) -->
 				<div
 					id='leaderboard-display'
-					class='rounded-2xl border border-border/60 bg-muted/70 p-3 shadow-sm'
+					class='rounded-2xl border border-border/60 bg-muted/70 p-4 shadow-sm'
 				>
-					<div
-						class='flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-muted-foreground'
-					>
-						<span class='text-base'>🏆</span>
+					<div class='flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-slate-600 dark:text-slate-300'>
+						<span class='text-lg'>🏆</span>
 						<span>Top Players</span>
 					</div>
-					<div id='leaderboard-list' class='mt-3 text-xs'></div>
+					<div id='leaderboard-list' class='mt-3'></div>
 				</div>
 			</div>
 		</div>
@@ -150,7 +142,7 @@ import AppLayout from '../../../shared/src/layouts/AppLayout.astro'
 		<div id='dashboard-section' class='space-y-6 rounded-lg border bg-card p-4'>
 			<div class='flex items-center justify-between'>
 				<div>
-					<h3 class='font-semibold'>📊 Analytics Dashboard</h3>
+					<h3 class='mb-3 text-lg font-semibold'>📊 Analytics Dashboard</h3>
 					<p class='text-xs text-muted-foreground'>Real-time A/B test results</p>
 				</div>
 				<div class='flex items-center gap-3'>
@@ -249,10 +241,35 @@ import AppLayout from '../../../shared/src/layouts/AppLayout.astro'
 
 			<!-- Recent Completions Table -->
 			<div class='rounded-lg border bg-card p-4'>
-				<h4 class='mb-4 text-sm font-semibold'>Recent Completions</h4>
+				<h3 class='mb-4 text-lg font-semibold'>Recent Completions</h3>
 				<div id='completions-table'></div>
 			</div>
+
+			<!-- Global Completions Map -->
+			<div class='rounded-lg border bg-card p-4'>
+				<div class='mb-4 flex items-center justify-between'>
+					<div class='flex items-center gap-3'>
+						<h3 class='text-lg font-semibold'>🌍 Global Completions Map</h3>
+						<span class='text-xs text-muted-foreground'>Scroll to zoom • Click markers for details</span>
+					</div>
+					<div class='flex items-center gap-4 text-sm'>
+						<span class='flex items-center gap-1.5'>
+							<span class='inline-block h-3 w-3 rounded-full bg-[#F7CA45] ring-1 ring-amber-500'></span>
+							<span class='text-muted-foreground'>Variant A</span>
+						</span>
+						<span class='flex items-center gap-1.5'>
+							<span class='inline-block h-3 w-3 rounded-full bg-[#4572F7] ring-1 ring-blue-600'></span>
+							<span class='text-muted-foreground'>Variant B</span>
+						</span>
+					</div>
+				</div>
+				<div id='geo-map' class='h-[450px] w-full cursor-pointer rounded-lg'></div>
+			</div>
 		</div>
+
+		<!-- Leaflet for geo map -->
+		<link rel='stylesheet' href='https://unpkg.com/leaflet@1.9.4/dist/leaflet.css' />
+		<script src='https://unpkg.com/leaflet@1.9.4/dist/leaflet.js' is:inline></script>
 
 		<script src='https://cdn.plot.ly/plotly-2.27.0.min.js' is:inline></script>
 		<script src='/ab-simulator/js/utils.js' is:inline></script>

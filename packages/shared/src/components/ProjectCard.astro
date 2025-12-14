@@ -52,7 +52,7 @@ const supabaseKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY
             <span class='mx-2'>|</span>
             <span class='stat-value font-semibold text-foreground tabular-nums' data-stat='views_30d'>—</span> P30D Views
             <span class='mx-2'>|</span>
-            Rank <span class='stat-value font-semibold text-foreground tabular-nums' data-stat='rank'>—</span>
+            Project View Rank: <span class='stat-value font-semibold text-foreground tabular-nums' data-stat='rank'>—</span>
           </div>
         )}
       </div>
@@ -100,7 +100,7 @@ const supabaseKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY
             <span class='mx-1.5'>|</span>
             <span class='stat-value font-semibold text-foreground tabular-nums' data-stat='views_30d'>—</span> P30D Views
             <span class='mx-1.5'>|</span>
-            Rank <span class='stat-value font-semibold text-foreground tabular-nums' data-stat='rank'>—</span>
+            Project View Rank: <span class='stat-value font-semibold text-foreground tabular-nums' data-stat='rank'>—</span>
           </div>
         )}
         
@@ -163,8 +163,8 @@ const supabaseKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY
         if (views30dEl && data.views_30d !== undefined) {
           views30dEl.textContent = data.views_30d.toLocaleString()
         }
-        if (rankEl && data.rank !== undefined && data.total_projects !== undefined) {
-          rankEl.textContent = `#${data.rank} of ${data.total_projects}`
+        if (rankEl && data.rank !== undefined) {
+          rankEl.textContent = `#${data.rank}`
         }
       } catch (error) {
         console.debug('Could not load engagement stats:', error)

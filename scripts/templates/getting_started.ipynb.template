@@ -90,7 +90,7 @@
     "        print(f\"📊 {PROJECT_ID} Engagement Stats\")\n",
     "        print(f\"   Total Views: {stats['total_views']:,}\")\n",
     "        print(f\"   P30D Views:  {stats['views_30d']:,}\")\n",
-    "        print(f\"   Rank:        #{stats['rank']} of {stats['total_projects']}\")\n",
+    "        print(f\"   Project View Rank: #{stats['rank']}\")\n",
     "    else:\n",
     "        print(f\"No data yet for {PROJECT_ID}. Visit the app to generate pageviews!\")\n",
     "except Exception as e:\n",

@@ -220,14 +220,78 @@
 		)
 	}
 
+	// Store Leaflet map instance for reuse
+	let leafletMap = null
+
+	function renderGeoMap(geoData) {
+		const mapEl = document.getElementById('geo-map')
+		if (!mapEl || typeof L === 'undefined') return
+
+		const hasData = geoData && geoData.length > 0
+		if (!hasData) {
+			mapEl.innerHTML = '<div class="flex h-full items-center justify-center text-muted-foreground">No geo data yet</div>'
+			return
+		}
+
+		// Initialize map once
+		if (!leafletMap) {
+			leafletMap = L.map('geo-map', { scrollWheelZoom: true }).setView([25, 0], 2)
+			L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+				attribution: '&copy; <a href="https://carto.com/">CARTO</a>',
+				subdomains: 'abcd',
+				maxZoom: 19
+			}).addTo(leafletMap)
+
+			// Reset zoom button (Leaflet control)
+			L.Control.ResetView = L.Control.extend({
+				onAdd: function() {
+					const btn = L.DomUtil.create('button', 'leaflet-bar leaflet-control')
+					btn.innerHTML = '🏠'
+					btn.title = 'Reset view'
+					btn.style.cssText = 'width:30px;height:30px;font-size:16px;cursor:pointer;background:#fff;border:none;'
+					btn.onclick = (e) => { e.stopPropagation(); leafletMap.setView([25, 0], 2) }
+					return btn
+				}
+			})
+			new L.Control.ResetView({ position: 'topleft' }).addTo(leafletMap)
+		} else {
+			// Clear existing markers
+			leafletMap.eachLayer(layer => {
+				if (layer instanceof L.CircleMarker) leafletMap.removeLayer(layer)
+			})
+		}
+
+		// Scale bubble radius (min 8, max 30)
+		const maxCompletions = Math.max(...geoData.map(d => d.completions))
+		const scaleRadius = (count) => 8 + (count / maxCompletions) * 22
+
+		// Add markers
+		geoData.forEach(d => {
+			const color = d.variant === 'A' ? colors.variantA : colors.variantB
+			const borderColor = d.variant === 'A' ? '#b8860b' : '#2d4a9e'
+
+			L.circleMarker([d.lat, d.lon], {
+				radius: scaleRadius(d.completions),
+				fillColor: color,
+				color: borderColor,
+				weight: 2,
+				opacity: 1,
+				fillOpacity: 0.8
+			})
+			.bindPopup(`<strong>${d.city}, ${d.country}</strong><br>Variant ${d.variant}<br>Completions: ${d.completions}<br>Avg Time: ${(d.avg_time_ms / 1000).toFixed(2)}s`)
+			.addTo(leafletMap)
+		})
+	}
+
 	async function updateDashboard() {
 		try {
 			if (!window.supabaseApi) throw new Error('Supabase API not initialized')
-			const [overview, funnel, completions, distribution] = await Promise.all([
+			const [overview, funnel, completions, distribution, geoData] = await Promise.all([
 				window.supabaseApi.variantOverview(),
 				window.supabaseApi.funnel(),
 				window.supabaseApi.recent(50),
-				window.supabaseApi.distribution()
+				window.supabaseApi.distribution(),
+				window.supabaseApi.geoCompletions()
 			])
 			const theme = getPlotlyTheme()
 			if (!overview || !overview.comparison || !overview.stats) {
@@ -238,6 +302,7 @@
 			renderAvgTimeChart(overview.stats, theme)
 			renderDistributionChart(distribution || {}, theme)
 			renderCompletionsTable(completions, theme)
+			renderGeoMap(geoData || [])
 			document.getElementById('last-updated').innerHTML =
 				`Last updated: ${new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}`
 			document.getElementById('update-indicator').classList.remove('opacity-50')

@@ -71,6 +71,9 @@
 		},
 		personalBest(variant, username) {
 			return rpc('personal_best', { variant, username })
+		},
+		geoCompletions() {
+			return rpc('ab_completions_geo', {})
 		}
 	}
-})()
+})();

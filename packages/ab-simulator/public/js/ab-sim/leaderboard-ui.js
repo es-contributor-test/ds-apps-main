@@ -2,25 +2,25 @@
 	const LEADERBOARD_ROW_SURFACE =
 		'bg-white border border-slate-200 dark:bg-slate-900/80 dark:border-slate-700 shadow-sm'
 	const LEADERBOARD_ROW_BASE =
-		'flex items-center justify-between rounded-2xl px-3 py-1 text-[11px] transition-all duration-200 transform'
+		'flex items-center justify-between gap-2 rounded-xl px-3 py-2 text-sm transition-all duration-200 transform'
 
 	function buildLeaderboardRow(entry, index, isCurrentUser) {
 		const glowClass = isCurrentUser
 			? 'ring-2 ring-amber-300 shadow-[0_0_28px_rgba(251,191,36,0.45)]'
 			: 'hover:ring-1 hover:ring-slate-200 dark:hover:ring-slate-600'
 		const youTag = isCurrentUser
-			? '<span class="text-[9px] uppercase tracking-[0.3em] text-sky-600 dark:text-sky-300">You</span>'
+			? '<span class="shrink-0 text-[10px] font-bold uppercase text-sky-600 dark:text-sky-300">YOU</span>'
 			: ''
 		return `
-      <li class="${LEADERBOARD_ROW_BASE} ${LEADERBOARD_ROW_SURFACE} ${glowClass} hover:-translate-y-0.5 hover:shadow-lg hover:bg-slate-50 dark:hover:bg-slate-900/60 focus-within:-translate-y-0.5 focus-within:ring-2 focus-within:ring-slate-300">
-        <span class="flex items-center gap-2 font-mono text-[11px]">
-          <span class="inline-flex h-6 w-6 items-center justify-center rounded-full bg-slate-100 font-semibold text-[10px] text-slate-600 dark:bg-slate-800 dark:text-slate-200">
+      <li class="${LEADERBOARD_ROW_BASE} ${LEADERBOARD_ROW_SURFACE} ${glowClass} hover:-translate-y-0.5 hover:shadow-lg hover:bg-slate-50 dark:hover:bg-slate-900/60">
+        <span class="flex min-w-0 flex-1 items-center gap-2">
+          <span class="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-xs font-bold text-slate-600 dark:bg-slate-800 dark:text-slate-200">
             ${index + 1}
           </span>
-          <span class="truncate leading-tight ${isCurrentUser ? 'font-semibold' : ''}">${entry.username}</span>
+          <span class="truncate font-medium ${isCurrentUser ? 'font-semibold' : ''}">${entry.username}</span>
           ${youTag}
         </span>
-        <span class="font-semibold text-slate-900 dark:text-slate-100 tabular-nums text-xs">${Number(entry.best_time).toFixed(2)}s</span>
+        <span class="shrink-0 font-mono font-bold tabular-nums text-slate-900 dark:text-slate-100">${Number(entry.best_time).toFixed(2)}s</span>
       </li>
     `
 	}
@@ -28,14 +28,14 @@
 	function buildLeaderboardUserCard(entry, userRank) {
 		if (!entry || !userRank) return ''
 		return `
-      <div class="mt-3 space-y-1.5 rounded-2xl border border-sky-200/80 bg-sky-50/80 p-2.5 text-[11px] text-sky-900 shadow-[0_12px_28px_rgba(14,165,233,0.25)] dark:border-sky-500/40 dark:bg-sky-500/10 dark:text-sky-100">
-        <div class="text-[9px] font-semibold uppercase tracking-[0.3em] text-sky-600 dark:text-sky-300">Your Current Rank</div>
-        <div class="flex items-center justify-between font-mono text-[11px]">
-          <span class="flex items-center gap-1.5">
+      <div class="mt-3 space-y-2 rounded-xl border border-sky-200/80 bg-sky-50/80 p-3 text-sm text-sky-900 shadow-[0_12px_28px_rgba(14,165,233,0.25)] dark:border-sky-500/40 dark:bg-sky-500/10 dark:text-sky-100">
+        <div class="text-[10px] font-bold uppercase tracking-wider text-sky-600 dark:text-sky-300">Your Current Rank</div>
+        <div class="flex items-center justify-between">
+          <span class="flex items-center gap-2 font-medium">
             <span class="font-bold">${userRank}.</span>
             <span>${entry.username}</span>
           </span>
-          <span class="font-semibold tabular-nums">${Number(entry.best_time).toFixed(2)}s</span>
+          <span class="font-mono font-bold tabular-nums">${Number(entry.best_time).toFixed(2)}s</span>
         </div>
       </div>
     `
