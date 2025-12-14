@@ -5,9 +5,9 @@
 	"scripts": {
 		"dev": "astro dev",
 		"dev:check": "astro check --watch & astro dev",
-		"dev:ab-sim": "pnpm --filter @soma/ab-simulator dev",
+		"dev:ab-sim": "pnpm --filter @eeshans/ab-simulator dev",
 		"start": "astro dev",
-		"build:packages": "dotenv -e .env -- pnpm --filter @soma/ab-simulator build",
+		"build:packages": "dotenv -e .env -- pnpm --filter @eeshans/ab-simulator build",
 		"build": "pnpm run build:packages && astro build",
 		"build:check": "astro check && astro build",
 		"preview": "astro preview",

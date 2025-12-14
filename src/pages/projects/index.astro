@@ -7,14 +7,15 @@ import PageLayout from '../../layouts/BaseLayout.astro'
 import Section from '../../components/Section.astro'
 import Breadcrumbs from '../../../packages/shared/src/components/Breadcrumbs.astro'
 
-import { parseProjectsYaml, getLiveProjects, getProjectsByStatus } from '../../../packages/shared/src/lib/projects'
-import projectsYaml from '../../../packages/shared/src/data/projects.yaml?raw'
+import { getLiveProjects, getProjectsByStatus } from '../../../packages/shared/src/lib/projects'
+import { getAllProjects } from '../../../packages/shared/src/data/projectLoader'
 import ProjectCard from '../../../packages/shared/src/components/ProjectCard.astro'
 import Timeline from '../../../packages/shared/src/components/Timeline.astro'
 
-const allProjects = parseProjectsYaml(projectsYaml)
+const allProjects = getAllProjects()
 const liveProjects = getLiveProjects(allProjects)
 const inProgressProjects = getProjectsByStatus(allProjects, 'in-progress')
+const activeProjects = [...liveProjects, ...inProgressProjects] // Cards for live + in-progress
 const upcomingProjects = getProjectsByStatus(allProjects, 'coming-soon')
 ---
 
@@ -28,20 +29,20 @@ const upcomingProjects = getProjectsByStatus(allProjects, 'coming-soon')
 			</p>
 		</Section>
 
-		{liveProjects.length > 0 && (
-			<Section title='Live'>
+		{activeProjects.length > 0 && (
+			<Section title='Active'>
 				<div class='space-y-4'>
-					{liveProjects.map((project) => (
+					{activeProjects.map((project) => (
 						<ProjectCard project={project} variant='full' />
 					))}
 				</div>
 			</Section>
 		)}
 
-		{(inProgressProjects.length > 0 || upcomingProjects.length > 0) && (
+		{upcomingProjects.length > 0 && (
 			<Section title="What's Next">
 				<Timeline 
-					inProgressProjects={inProgressProjects} 
+					inProgressProjects={[]} 
 					upcomingProjects={upcomingProjects}
 					title=""
 				/>

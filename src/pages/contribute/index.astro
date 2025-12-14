@@ -3,12 +3,10 @@ import BaseLayout from '@/layouts/BaseLayout.astro'
 import Breadcrumbs from '../../../packages/shared/src/components/Breadcrumbs.astro'
 import Contributors from '@/components/Contributors.astro'
 import { Icon } from 'astro-icon/components'
-import { parseProjectsYaml, getLiveProjects, getProjectsByStatus, STATUS_CONFIG } from '../../../packages/shared/src/lib/projects'
+import { getLiveProjects, getProjectsByStatus, STATUS_CONFIG } from '../../../packages/shared/src/lib/projects'
+import { getAllProjects } from '../../../packages/shared/src/data/projectLoader'
 
-// @ts-ignore - yaml import
-import projectsYaml from '../../../packages/shared/src/data/projects.yaml?raw'
-
-const allProjects = parseProjectsYaml(projectsYaml)
+const allProjects = getAllProjects()
 const liveProjects = getLiveProjects(allProjects)
 const inProgressProjects = getProjectsByStatus(allProjects, 'in-progress')
 ---
@@ -76,6 +74,16 @@ const inProgressProjects = getProjectsByStatus(allProjects, 'in-progress')
     <!-- How to Contribute -->
     <section class="mt-6 border border-border bg-primary-foreground p-6">
       <h2 class="text-xl font-bold text-foreground mb-4">How to Contribute</h2>
+      
+      <!-- Detailed Guide CTA -->
+      <div class="mb-6 p-4 border-2 border-dashed border-amber-400 dark:border-amber-600 bg-amber-50 dark:bg-amber-950/30">
+        <p class="font-medium text-amber-800 dark:text-amber-200">
+          🚀 New to contributing? <a href="/contribute/guide" class="underline hover:text-amber-900 dark:hover:text-amber-100 font-bold">Read the step-by-step guide →</a>
+        </p>
+        <p class="text-sm text-amber-700 dark:text-amber-300 mt-1">
+          Prerequisites, setup commands, project structure, and tips for using AI—everything you need.
+        </p>
+      </div>
       
       <div class="space-y-6">
         <div>

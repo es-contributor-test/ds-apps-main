@@ -5,11 +5,12 @@ import { STATUS_CONFIG } from '../lib/projects'
 interface Props {
   project: Project
   variant?: 'full' | 'compact'
+  showStats?: boolean
 }
 
-const { project, variant = 'full' } = Astro.props
+const { project, variant = 'full', showStats = true } = Astro.props
 const statusConfig = STATUS_CONFIG[project.status]
-const hasStats = !!project.stats
+const isActive = project.status === 'live' || project.status === 'in-progress'
 
 // Pass Supabase config to client script
 const supabaseUrl = import.meta.env.PUBLIC_SUPABASE_URL
@@ -39,24 +40,19 @@ const supabaseKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY
           ))}
         </div>
         
-        {/* Live Stats Row */}
-        {hasStats && (
+        {/* Standard Engagement Stats */}
+        {showStats && isActive && (
           <div 
-            class='project-stats flex flex-wrap gap-4 pt-2'
+            class='project-engagement-stats pt-2 text-sm text-muted-foreground'
             data-project-id={project.id}
-            data-metrics={JSON.stringify(project.stats!.metrics)}
+            data-supabase-url={supabaseUrl}
+            data-supabase-key={supabaseKey}
           >
-            {project.stats!.metrics.map((metric) => (
-              <div class='flex flex-col'>
-                <span 
-                  class='stat-value text-lg font-bold text-foreground tabular-nums'
-                  data-key={metric.key}
-                >
-                  —
-                </span>
-                <span class='text-xs text-muted-foreground'>{metric.label}</span>
-              </div>
-            ))}
+            <span class='stat-value font-semibold text-foreground tabular-nums' data-stat='total_views'>—</span> Total Views
+            <span class='mx-2'>|</span>
+            <span class='stat-value font-semibold text-foreground tabular-nums' data-stat='views_30d'>—</span> P30D Views
+            <span class='mx-2'>|</span>
+            Rank <span class='stat-value font-semibold text-foreground tabular-nums' data-stat='rank'>—</span>
           </div>
         )}
       </div>
@@ -93,23 +89,18 @@ const supabaseKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY
         <p class='text-sm text-muted-foreground'>{project.shortDescription}</p>
         
         {/* Compact Stats Row */}
-        {hasStats && (
+        {showStats && isActive && (
           <div 
-            class='project-stats flex flex-wrap gap-3 pt-1'
+            class='project-engagement-stats pt-1 text-xs text-muted-foreground'
             data-project-id={project.id}
-            data-metrics={JSON.stringify(project.stats!.metrics)}
+            data-supabase-url={supabaseUrl}
+            data-supabase-key={supabaseKey}
           >
-            {project.stats!.metrics.map((metric) => (
-              <span class='text-xs text-muted-foreground'>
-                <span 
-                  class='stat-value font-semibold text-foreground tabular-nums'
-                  data-key={metric.key}
-                >
-                  —
-                </span>
-                {' '}{metric.label}
-              </span>
-            ))}
+            <span class='stat-value font-semibold text-foreground tabular-nums' data-stat='total_views'>—</span> Total Views
+            <span class='mx-1.5'>|</span>
+            <span class='stat-value font-semibold text-foreground tabular-nums' data-stat='views_30d'>—</span> P30D Views
+            <span class='mx-1.5'>|</span>
+            Rank <span class='stat-value font-semibold text-foreground tabular-nums' data-stat='rank'>—</span>
           </div>
         )}
         
@@ -131,90 +122,53 @@ const supabaseKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY
   </div>
 )}
 
-{/* Client-side hydration script for stats */}
-{hasStats && (
-  <script
-    is:inline
-    define:vars={{
-      SUPABASE_URL: supabaseUrl,
-      SUPABASE_ANON_KEY: supabaseKey
-    }}
-  >
-    // Hydrate project stats on page load - calls Supabase directly
-    document.addEventListener('DOMContentLoaded', () => {
-      if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
-        console.debug('Supabase not configured, skipping stats')
-        return
-      }
+{/* Client-side hydration script for standard engagement stats */}
+<script is:inline>
+  // Hydrate engagement stats on page load
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.project-engagement-stats').forEach(async (container) => {
+      const projectId = container.getAttribute('data-project-id')
+      const supabaseUrl = container.getAttribute('data-supabase-url')
+      const supabaseKey = container.getAttribute('data-supabase-key')
       
-      document.querySelectorAll('.project-stats').forEach(async (container) => {
-        const projectId = container.getAttribute('data-project-id')
-        const metrics = JSON.parse(container.getAttribute('data-metrics') || '[]')
-        
-        if (!projectId) return
-        
-        try {
-          // Fetch puzzle stats from webhook table view
-          const statsResponse = await fetch(
-            `${SUPABASE_URL}/rest/v1/v_ab_simulator_stats?select=*`,
-            {
-              headers: {
-                'apikey': SUPABASE_ANON_KEY,
-                'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
-              }
-            }
-          )
-          
-          const statsData = statsResponse.ok ? (await statsResponse.json())[0] : {}
-          
-          // Fetch page views from batch table RPC
-          const pageViewsResponse = await fetch(
-            `${SUPABASE_URL}/rest/v1/rpc/page_views`,
-            {
-              method: 'POST',
-              headers: {
-                'apikey': SUPABASE_ANON_KEY,
-                'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-                'Content-Type': 'application/json'
-              },
-              body: JSON.stringify({ 
-                path_pattern: `/${projectId}%`,
-                days_back: 365
-              })
-            }
-          )
-          
-          let pageViews = 0
-          if (pageViewsResponse.ok) {
-            const pvData = await pageViewsResponse.json()
-            // Sum all matching paths
-            pageViews = pvData.reduce((sum, row) => sum + parseInt(row.views || 0, 10), 0)
+      if (!projectId || !supabaseUrl || !supabaseKey) return
+      
+      try {
+        const response = await fetch(
+          `${supabaseUrl}/rest/v1/rpc/project_engagement_stats`,
+          {
+            method: 'POST',
+            headers: {
+              'apikey': supabaseKey,
+              'Authorization': `Bearer ${supabaseKey}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ p_project_id: projectId })
           }
-          
-          // Merge data
-          const data = { ...statsData, page_views: pageViews }
-          
-          // Update each stat value
-          metrics.forEach((metric) => {
-            const el = container.querySelector(`[data-key="${metric.key}"]`)
-            if (!el || data[metric.key] === undefined) return
-            
-            let value = data[metric.key]
-            
-            // Format the value
-            if (metric.format === 'percent') {
-              value = `${value}%`
-            } else if (typeof value === 'number') {
-              value = value.toLocaleString()
-            }
-            
-            el.textContent = value
-          })
-        } catch (error) {
-          // Silently fail - stats will show "—"
-          console.debug('Could not load project stats:', error)
+        )
+        
+        if (!response.ok) return
+        
+        const rows = await response.json()
+        const data = rows[0]
+        if (!data) return
+        
+        const totalEl = container.querySelector('[data-stat="total_views"]')
+        const views30dEl = container.querySelector('[data-stat="views_30d"]')
+        const rankEl = container.querySelector('[data-stat="rank"]')
+        
+        if (totalEl && data.total_views !== undefined) {
+          totalEl.textContent = data.total_views.toLocaleString()
         }
-      })
+        if (views30dEl && data.views_30d !== undefined) {
+          views30dEl.textContent = data.views_30d.toLocaleString()
+        }
+        if (rankEl && data.rank !== undefined && data.total_projects !== undefined) {
+          rankEl.textContent = `#${data.rank} of ${data.total_projects}`
+        }
+      } catch (error) {
+        console.debug('Could not load engagement stats:', error)
+      }
     })
-  </script>
-)}
+  })
+</script>

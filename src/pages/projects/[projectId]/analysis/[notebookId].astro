@@ -12,14 +12,13 @@ import Section from '../../../../components/Section.astro'
 import Breadcrumbs from '../../../../../packages/shared/src/components/Breadcrumbs.astro'
 import { Icon } from 'astro-icon/components'
 
-import { parseProjectsYaml } from '../../../../../packages/shared/src/lib/projects'
-import projectsYaml from '../../../../../packages/shared/src/data/projects.yaml?raw'
+import { getAllProjects } from '../../../../../packages/shared/src/data/projectLoader'
 import fs from 'node:fs'
 import path from 'node:path'
 
 // Generate static paths for all notebooks
 export async function getStaticPaths() {
-  const allProjects = parseProjectsYaml(projectsYaml)
+  const allProjects = getAllProjects()
   
   const paths = []
   for (const project of allProjects) {

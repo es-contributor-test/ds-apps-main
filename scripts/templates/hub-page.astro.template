@@ -1,12 +1,12 @@
 ---
 /**
- * Project Hub: A/B Testing Memory Game
+ * Project Hub: {{DISPLAY_NAME}}
  */
 import ProjectHubLayout from '../../layouts/ProjectHubLayout.astro'
 import { getProjectById } from '../../../packages/shared/src/data/projectLoader'
 
-const project = getProjectById('ab-simulator')
-if (!project) throw new Error('Project ab-simulator not found')
+const project = getProjectById('{{PACKAGE_NAME}}')
+if (!project) throw new Error('Project {{PACKAGE_NAME}} not found')
 ---
 
 <ProjectHubLayout project={project} />

@@ -20,14 +20,15 @@ const socialData = yaml.load(socialLinksYaml) as {
 const socialLinks = socialData.socialLinks
 
 // Load projects
-import { parseProjectsYaml, getLiveProjects, getProjectsByStatus } from '../../packages/shared/src/lib/projects'
-import projectsYaml from '../../packages/shared/src/data/projects.yaml?raw'
+import { getLiveProjects, getProjectsByStatus } from '../../packages/shared/src/lib/projects'
+import { getAllProjects } from '../../packages/shared/src/data/projectLoader'
 import ProjectCard from '../../packages/shared/src/components/ProjectCard.astro'
 import Timeline from '../../packages/shared/src/components/Timeline.astro'
 
-const allProjects = parseProjectsYaml(projectsYaml)
+const allProjects = getAllProjects()
 const liveProjects = getLiveProjects(allProjects)
 const inProgressProjects = getProjectsByStatus(allProjects, 'in-progress')
+const activeProjects = [...liveProjects, ...inProgressProjects] // Cards for live + in-progress
 const upcomingProjects = getProjectsByStatus(allProjects, 'coming-soon')
 ---
 
@@ -107,18 +108,20 @@ const upcomingProjects = getProjectsByStatus(allProjects, 'coming-soon')
 			<section class='mt-10 space-y-4'>
 				<h2 class='text-2xl font-bold text-foreground'>Projects</h2>
 				<div class='space-y-3'>
-					{liveProjects.map((project) => (
+					{activeProjects.map((project) => (
 						<ProjectCard project={project} variant='compact' />
 					))}
 				</div>
 				
-				<!-- What's Next Timeline -->
-				<div class='mt-6'>
-					<Timeline 
-						inProgressProjects={inProgressProjects} 
-						upcomingProjects={upcomingProjects} 
-					/>
-				</div>
+				<!-- What's Next Timeline (coming-soon only) -->
+				{upcomingProjects.length > 0 && (
+					<div class='mt-6'>
+						<Timeline 
+							inProgressProjects={[]} 
+							upcomingProjects={upcomingProjects} 
+						/>
+					</div>
+				)}
 			</section>
 
 			<!-- ============================================ -->

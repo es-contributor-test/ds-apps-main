@@ -8,16 +8,6 @@ export interface ProjectTag {
   color?: string // deprecated, kept for YAML compat
 }
 
-export interface ProjectStatMetric {
-  key: string
-  label: string
-  format?: 'number' | 'percent'
-}
-
-export interface ProjectStats {
-  metrics: ProjectStatMetric[]
-}
-
 export interface ProjectNotebook {
   id: string
   title: string
@@ -36,8 +26,6 @@ export interface Project {
   description: string
   shortDescription: string
   tags: ProjectTag[]
-  stats?: ProjectStats
-  aiStory?: string[] // Bullets describing how AI helped build this project
   notebooks?: ProjectNotebook[] // Jupyter notebooks associated with this project
 }
 

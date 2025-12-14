@@ -1,0 +1,538 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro'
+import Breadcrumbs from '../../../packages/shared/src/components/Breadcrumbs.astro'
+import { Icon } from 'astro-icon/components'
+---
+
+<BaseLayout meta={{ title: 'Contribution Guide', description: 'Step-by-step guide to contributing to eeshans.com data science projects' }}>
+  <div class="flex w-full flex-col prose prose-neutral dark:prose-invert max-w-none">
+    
+    <Breadcrumbs items={[
+      { label: 'Home', href: '/' },
+      { label: 'Contribute', href: '/contribute' },
+      { label: 'Guide' }
+    ]} />
+
+    <h1 class="mt-6">Contribution Guide</h1>
+    
+    <p class="lead text-lg text-muted-foreground">
+      A step-by-step guide for data scientists who want to contribute. No software engineering experience required—just follow along and use AI to help you through the tricky parts.
+    </p>
+
+    <div class="not-prose my-6 border-l-4 border-amber-500 bg-amber-50 dark:bg-amber-950/30 p-4">
+      <p class="font-medium text-amber-800 dark:text-amber-200">🤖 AI Tip: Before You Start</p>
+      <p class="text-sm text-amber-700 dark:text-amber-300 mt-1">
+        Copy this entire guide into Claude or ChatGPT and say: "I want to contribute to this project. Help me understand the setup and guide me through each step." AI is your pair programmer here.
+      </p>
+    </div>
+
+    <!-- Table of Contents -->
+    <nav class="not-prose my-8 border border-border p-6 bg-primary-foreground">
+      <h2 class="text-lg font-bold mb-4">Table of Contents</h2>
+      <ol class="space-y-2 text-base">
+        <li><a href="#prerequisites" class="text-muted-foreground hover:text-foreground underline">1. Prerequisites</a></li>
+        <li><a href="#setup" class="text-muted-foreground hover:text-foreground underline">2. Getting Set Up</a></li>
+        <li><a href="#project-structure" class="text-muted-foreground hover:text-foreground underline">3. Understanding the Project Structure</a></li>
+        <li><a href="#option-1-fix-existing" class="text-muted-foreground hover:text-foreground underline">4. Option 1: Fix or Improve an Existing App</a></li>
+        <li><a href="#option-2-build-new" class="text-muted-foreground hover:text-foreground underline">5. Option 2: Build a New Data Science App</a></li>
+        <li><a href="#testing" class="text-muted-foreground hover:text-foreground underline">6. Testing Your Changes</a></li>
+        <li><a href="#submitting" class="text-muted-foreground hover:text-foreground underline">7. Submitting Your Work</a></li>
+        <li><a href="#ai-workflow" class="text-muted-foreground hover:text-foreground underline">8. Using AI Effectively</a></li>
+      </ol>
+    </nav>
+
+    <!-- Prerequisites -->
+    <section id="prerequisites">
+      <h2>1. Prerequisites</h2>
+      
+      <p>You'll need these tools installed on your computer. If you don't have them, click the links for installation instructions.</p>
+      
+      <div class="not-prose overflow-x-auto">
+        <table class="w-full text-base">
+          <thead>
+            <tr class="border-b border-border">
+              <th class="text-left py-3 px-4">Tool</th>
+              <th class="text-left py-3 px-4">Version</th>
+              <th class="text-left py-3 px-4">Check Command</th>
+              <th class="text-left py-3 px-4">Install Link</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="border-b border-border">
+              <td class="py-3 px-4 font-medium">Node.js</td>
+              <td class="py-3 px-4">20 or later</td>
+              <td class="py-3 px-4"><code class="bg-muted px-2 py-1 rounded text-sm">node -v</code></td>
+              <td class="py-3 px-4"><a href="https://nodejs.org/" class="underline">nodejs.org</a></td>
+            </tr>
+            <tr class="border-b border-border">
+              <td class="py-3 px-4 font-medium">pnpm</td>
+              <td class="py-3 px-4">9 or later</td>
+              <td class="py-3 px-4"><code class="bg-muted px-2 py-1 rounded text-sm">pnpm -v</code></td>
+              <td class="py-3 px-4"><code class="bg-muted px-2 py-1 rounded text-sm">npm install -g pnpm</code></td>
+            </tr>
+            <tr class="border-b border-border">
+              <td class="py-3 px-4 font-medium">Git</td>
+              <td class="py-3 px-4">Any recent</td>
+              <td class="py-3 px-4"><code class="bg-muted px-2 py-1 rounded text-sm">git --version</code></td>
+              <td class="py-3 px-4"><a href="https://git-scm.com/" class="underline">git-scm.com</a></td>
+            </tr>
+            <tr class="border-b border-border">
+              <td class="py-3 px-4 font-medium">Python</td>
+              <td class="py-3 px-4">3.11+ (for notebooks)</td>
+              <td class="py-3 px-4"><code class="bg-muted px-2 py-1 rounded text-sm">python --version</code></td>
+              <td class="py-3 px-4"><a href="https://python.org/" class="underline">python.org</a></td>
+            </tr>
+            <tr class="border-b border-border">
+              <td class="py-3 px-4 font-medium">VS Code</td>
+              <td class="py-3 px-4">Any recent</td>
+              <td class="py-3 px-4">—</td>
+              <td class="py-3 px-4"><a href="https://code.visualstudio.com/" class="underline">code.visualstudio.com</a></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="not-prose my-6 border-l-4 border-amber-500 bg-amber-50 dark:bg-amber-950/30 p-4">
+        <p class="font-medium text-amber-800 dark:text-amber-200">🤖 AI Tip: Installation Help</p>
+        <p class="text-sm text-amber-700 dark:text-amber-300 mt-1">
+          If any of these fail, paste the error into Claude/ChatGPT with "I'm on [Mac/Windows/Linux] and got this error installing [tool]. How do I fix it?"
+        </p>
+      </div>
+    </section>
+
+    <!-- Getting Set Up -->
+    <section id="setup">
+      <h2>2. Getting Set Up</h2>
+
+      <h3>Step 1: Fork the Repository</h3>
+      <p>Go to <a href="https://github.com/eeshansrivastava89/ds-apps-main">github.com/eeshansrivastava89/ds-apps-main</a> and click the <strong>Fork</strong> button in the top right. This creates your own copy.</p>
+
+      <h3>Step 2: Clone Your Fork</h3>
+      <p>Open your terminal (Mac: Terminal app, Windows: PowerShell or Git Bash) and run:</p>
+      
+      <pre class="not-prose"><code class="language-bash"># Replace YOUR-USERNAME with your GitHub username
+git clone https://github.com/YOUR-USERNAME/ds-apps-main.git
+cd ds-apps-main</code></pre>
+
+      <h3>Step 3: Install Dependencies</h3>
+      <pre class="not-prose"><code class="language-bash">pnpm install</code></pre>
+      <p>This will take 1-2 minutes. You'll see a lot of output—that's normal.</p>
+
+      <h3>Step 4: Set Up Environment Variables</h3>
+      <p>Copy the example environment file:</p>
+      <pre class="not-prose"><code class="language-bash">cp .env.example .env</code></pre>
+      
+      <p>Open <code>.env</code> in VS Code. You'll see variables like:</p>
+      <pre class="not-prose"><code class="language-env"># Analytics (optional for local dev - features will gracefully degrade)
+PUBLIC_POSTHOG_KEY=
+PUBLIC_POSTHOG_HOST=
+
+# Database (optional for local dev - stats won't load)
+PUBLIC_SUPABASE_URL=
+PUBLIC_SUPABASE_ANON_KEY=</code></pre>
+      
+      <p><strong>For most contributions, you can leave these blank.</strong> The site will work—you just won't see live stats or analytics. If you need them, ask Eeshan for test credentials.</p>
+
+      <h3>Step 5: Run the Development Server</h3>
+      <pre class="not-prose"><code class="language-bash">pnpm dev</code></pre>
+      
+      <p>You should see:</p>
+      <pre class="not-prose"><code>astro  v4.16.19 ready in 767 ms
+
+┃ Local    http://localhost:4321/
+┃ Network  use --host to expose</code></pre>
+
+      <p>Open <a href="http://localhost:4321">http://localhost:4321</a> in your browser. You should see the site! 🎉</p>
+
+      <div class="not-prose my-6 border-l-4 border-red-500 bg-red-50 dark:bg-red-950/30 p-4">
+        <p class="font-medium text-red-800 dark:text-red-200">⚠️ Common Issue: Port Already in Use</p>
+        <p class="text-sm text-red-700 dark:text-red-300 mt-1">
+          If you see "Port 4321 is in use", just use the port it suggests (usually 4322). Or close other terminal windows running dev servers.
+        </p>
+      </div>
+    </section>
+
+    <!-- Project Structure -->
+    <section id="project-structure">
+      <h2>3. Understanding the Project Structure</h2>
+
+      <p>This is a <strong>monorepo</strong>—multiple apps in one repository. Here's what matters:</p>
+
+      <pre class="not-prose"><code class="language-text">ds-apps-main/
+├── src/                          # Main portfolio site
+│   ├── pages/                    # Routes (each .astro file = a page)
+│   │   ├── index.astro           # Homepage (eeshans.com/)
+│   │   ├── about.astro           # About page
+│   │   ├── projects/             # Project pages
+│   │   ├── writing/              # Blog
+│   │   └── contribute/           # This guide!
+│   ├── components/               # Reusable UI pieces
+│   ├── content/post/             # Blog posts (Markdown files)
+│   └── layouts/                  # Page templates
+│
+├── packages/                     # Standalone apps
+│   ├── ab-simulator/             # The memory game (eeshans.com/ab-simulator)
+│   │   ├── src/pages/index.astro # Game page
+│   │   └── public/js/ab-sim/     # Game logic (vanilla JS)
+│   └── shared/                   # Shared components & data
+│       └── src/data/projects.yaml  # ⭐ Source of truth for all projects
+│
+├── analytics/notebooks/          # Jupyter notebooks
+│   └── ab_test_analysis.ipynb    # Analysis that auto-renders to the site
+│
+├── internal/                     # Infrastructure templates
+│   └── supabase-schema-template.sql  # Database schema for new projects
+│
+└── public/                       # Static files (images, generated HTML)</code></pre>
+
+      <div class="not-prose my-6 border-l-4 border-blue-500 bg-blue-50 dark:bg-blue-950/30 p-4">
+        <p class="font-medium text-blue-800 dark:text-blue-200">📁 Key Files to Know</p>
+        <ul class="text-sm text-blue-700 dark:text-blue-300 mt-2 space-y-1">
+          <li><strong>packages/shared/src/data/projects.yaml</strong> — All project metadata lives here</li>
+          <li><strong>src/content/post/</strong> — Blog posts are Markdown files here</li>
+          <li><strong>packages/ab-simulator/</strong> — Example of a complete data science app</li>
+        </ul>
+      </div>
+
+      <h3>How the Monorepo Works</h3>
+      <p>Each folder in <code>/packages/</code> is a separate app with its own:</p>
+      <ul>
+        <li><code>package.json</code> — dependencies</li>
+        <li><code>astro.config.mjs</code> — with a <code>base</code> path (e.g., <code>/ab-simulator</code>)</li>
+        <li><code>src/pages/</code> — its own routes</li>
+      </ul>
+      <p>When you build, all packages get merged into one site.</p>
+    </section>
+
+    <!-- Option 1: Fix Existing -->
+    <section id="option-1-fix-existing">
+      <h2>4. Option 1: Fix or Improve an Existing App</h2>
+
+      <p>This is the easiest way to start. Find something small to fix.</p>
+
+      <h3>Step 1: Find an Issue</h3>
+      <p>Browse <a href="https://github.com/eeshansrivastava89/ds-apps-main/issues?q=is%3Aissue+is%3Aopen">open issues</a>. Look for labels like:</p>
+      <ul>
+        <li><code>diff:easy</code> — Good first issues</li>
+        <li><code>cat:frontend</code> — UI changes</li>
+        <li><code>cat:docs</code> — Documentation improvements</li>
+      </ul>
+
+      <h3>Step 2: Claim It</h3>
+      <p>Comment on the issue: "I'd like to work on this!" This prevents duplicate work.</p>
+
+      <h3>Step 3: Create a Branch</h3>
+      <pre class="not-prose"><code class="language-bash"># Make sure you're on main and up to date
+git checkout main
+git pull origin main
+
+# Create your branch
+git checkout -b feature/your-username-short-description</code></pre>
+      
+      <p>Example: <code>feature/jane-fix-typo-homepage</code></p>
+
+      <h3>Step 4: Make Your Changes</h3>
+      <p>Edit the files. The dev server auto-reloads when you save.</p>
+
+      <div class="not-prose my-6 border-l-4 border-amber-500 bg-amber-50 dark:bg-amber-950/30 p-4">
+        <p class="font-medium text-amber-800 dark:text-amber-200">🤖 AI Tip: Understanding the Code</p>
+        <p class="text-sm text-amber-700 dark:text-amber-300 mt-1">
+          Open the file in VS Code, select all the code, and ask Claude: "Explain what this code does. I want to [your goal]. What should I change?"
+        </p>
+      </div>
+
+      <h3>Step 5: Test → Commit → Push</h3>
+      <p>See <a href="#testing">Testing</a> and <a href="#submitting">Submitting</a> sections below.</p>
+    </section>
+
+    <!-- Option 2: Build New -->
+    <section id="option-2-build-new">
+      <h2>5. Option 2: Build a New Data Science App</h2>
+
+      <p>This is more involved but more rewarding. You'll create something like the A/B Simulator—a standalone app that generates data you can analyze.</p>
+
+      <h3>Step 1: Propose Your Idea</h3>
+      <p>Before writing code, open a <a href="https://github.com/eeshansrivastava89/ds-apps-main/discussions/new?category=new-data-science-web-app-proposals">GitHub Discussion</a>. Include:</p>
+      <ul>
+        <li>What does the app do?</li>
+        <li>What data will it generate?</li>
+        <li>What analysis will you do on that data?</li>
+      </ul>
+      <p>We'll discuss scope, feasibility, and infrastructure needs.</p>
+
+      <h3>Step 2: Create Your Package</h3>
+      <p>Once approved, create the folder structure:</p>
+      
+      <pre class="not-prose"><code class="language-bash"># Create package directory
+mkdir -p packages/your-app-name/src/pages
+mkdir -p packages/your-app-name/public</code></pre>
+
+      <p>Create <code>packages/your-app-name/package.json</code>:</p>
+      <pre class="not-prose"><code class="language-json" set:html={`{
+  "name": "@eeshans/your-app-name",
+  "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build"
+  },
+  "dependencies": {
+    "astro": "^4.16.19"
+  }
+}`}></code></pre>
+
+      <p>Create <code>packages/your-app-name/astro.config.mjs</code>:</p>
+      <pre class="not-prose"><code class="language-javascript" set:html={`import { defineConfig } from 'astro/config'
+import tailwind from '@astrojs/tailwind'
+
+export default defineConfig({
+  // This is crucial - it sets the URL base path
+  base: '/your-app-name',
+  integrations: [tailwind()],
+  outDir: '../../dist/your-app-name',
+})`}></code></pre>
+
+      <p>Create <code>packages/your-app-name/src/pages/index.astro</code>:</p>
+      <pre class="not-prose"><code class="language-astro">---
+// Your app's main page
+---
+&lt;html&gt;
+  &lt;head&gt;
+    &lt;title&gt;Your App Name&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;h1&gt;Hello from Your App!&lt;/h1&gt;
+  &lt;/body&gt;
+&lt;/html&gt;</code></pre>
+
+      <h3>Step 3: Register in pnpm Workspace</h3>
+      <p>Open <code>pnpm-workspace.yaml</code> in the root and make sure it includes:</p>
+      <pre class="not-prose"><code class="language-yaml">packages:
+  - 'packages/*'</code></pre>
+      <p>(This is probably already there—just verify.)</p>
+
+      <h3>Step 4: Add to projects.yaml</h3>
+      <p>Open <code>packages/shared/src/data/projects.yaml</code> and add your project:</p>
+      <pre class="not-prose"><code class="language-yaml">  - id: your-app-name
+    name: Your App Name
+    url: /your-app-name
+    hubUrl: /projects/your-app-name
+    status: in-progress  # Change to 'live' when ready
+    description: A tool that does X to help data scientists Y
+    shortDescription: Does X for data scientists
+    tags:
+      - name: Python
+      - name: Statistics
+    # Add these when you have analytics set up:
+    # stats:
+    #   source: supabase
+    #   view: v_your_app_stats
+    #   metrics:
+    #     - key: total_users
+    #       label: users</code></pre>
+
+      <h3>Step 5: Create a Project Hub Page</h3>
+      <p>Create <code>src/pages/projects/your-app-name.astro</code> (copy from <code>ab-simulator.astro</code> and modify).</p>
+
+      <h3>Step 6: Set Up Analytics (Optional but Recommended)</h3>
+      <p>If you want to track user behavior:</p>
+      
+      <ol>
+        <li><strong>PostHog:</strong> We share one PostHog project. Namespace your events:
+          <pre class="not-prose"><code class="language-javascript" set:html={`posthog.capture('your_app_action_name', {
+  // your properties
+})`}></code></pre>
+        </li>
+        <li><strong>Supabase:</strong> Create your own free Supabase project at <a href="https://supabase.com">supabase.com</a>. Use <code>internal/supabase-schema-template.sql</code> as a starting point.</li>
+      </ol>
+
+      <h3>Step 7: Add an Analysis Notebook</h3>
+      <p>Create <code>analytics/notebooks/your_app_analysis.ipynb</code>. Then add it to <code>projects.yaml</code>:</p>
+      <pre class="not-prose"><code class="language-yaml">    notebooks:
+      - id: your-app-analysis
+        title: "Your App Analysis"
+        description: "Statistical analysis of user behavior"
+        path: analytics/notebooks/your_app_analysis.ipynb
+        schedule: weekly
+        outputPath: your-app-name</code></pre>
+      
+      <p>The notebook will auto-run weekly via GitHub Actions and render to <code>/projects/your-app-name/analysis/your-app-analysis</code>.</p>
+
+      <div class="not-prose my-6 border-l-4 border-amber-500 bg-amber-50 dark:bg-amber-950/30 p-4">
+        <p class="font-medium text-amber-800 dark:text-amber-200">🤖 AI Tip: Building Your App</p>
+        <p class="text-sm text-amber-700 dark:text-amber-300 mt-1">
+          Tell Claude: "I want to build a [describe your app]. Here's the ab-simulator code as an example: [paste packages/ab-simulator structure]. Help me create a similar structure for my app."
+        </p>
+      </div>
+    </section>
+
+    <!-- Testing -->
+    <section id="testing">
+      <h2>6. Testing Your Changes</h2>
+
+      <h3>Local Development Server</h3>
+      <pre class="not-prose"><code class="language-bash"># Run the dev server (auto-reloads on save)
+pnpm dev</code></pre>
+      <p>Check your changes at <a href="http://localhost:4321">http://localhost:4321</a></p>
+
+      <h3>Build Test (Important!)</h3>
+      <p>Before submitting, always run a full build:</p>
+      <pre class="not-prose"><code class="language-bash">pnpm build</code></pre>
+      <p>This catches errors that don't show in dev mode. If it fails, fix the errors before proceeding.</p>
+
+      <h3>Preview the Production Build</h3>
+      <pre class="not-prose"><code class="language-bash">pnpm preview</code></pre>
+      <p>This serves the built site exactly as it will appear in production.</p>
+
+      <h3>What to Check</h3>
+      <ul>
+        <li>✅ Your changes work as expected</li>
+        <li>✅ No console errors in browser DevTools (F12)</li>
+        <li>✅ Mobile responsive (resize browser window)</li>
+        <li>✅ Dark mode works (toggle in site header)</li>
+        <li>✅ <code>pnpm build</code> succeeds with no errors</li>
+      </ul>
+    </section>
+
+    <!-- Submitting -->
+    <section id="submitting">
+      <h2>7. Submitting Your Work</h2>
+
+      <h3>Step 1: Commit Your Changes</h3>
+      <pre class="not-prose"><code class="language-bash"># See what changed
+git status
+
+# Stage all changes
+git add .
+
+# Commit with a descriptive message
+git commit -m "feat: add X feature to Y component"</code></pre>
+
+      <p>Commit message format:</p>
+      <ul>
+        <li><code>feat:</code> — New feature</li>
+        <li><code>fix:</code> — Bug fix</li>
+        <li><code>docs:</code> — Documentation only</li>
+        <li><code>refactor:</code> — Code change that doesn't add features or fix bugs</li>
+      </ul>
+
+      <h3>Step 2: Push to Your Fork</h3>
+      <pre class="not-prose"><code class="language-bash">git push origin feature/your-branch-name</code></pre>
+
+      <h3>Step 3: Open a Pull Request</h3>
+      <ol>
+        <li>Go to your fork on GitHub</li>
+        <li>Click "Compare & pull request"</li>
+        <li>Fill out the PR template:
+          <ul>
+            <li>What does this PR do?</li>
+            <li>Link to the issue it fixes</li>
+            <li>Screenshots if it's a UI change</li>
+          </ul>
+        </li>
+        <li>Submit!</li>
+      </ol>
+
+      <p>I'll review within a few days. If changes are needed, I'll comment on the PR.</p>
+
+      <div class="not-prose my-6 border-l-4 border-green-500 bg-green-50 dark:bg-green-950/30 p-4">
+        <p class="font-medium text-green-800 dark:text-green-200">✅ PR Checklist</p>
+        <ul class="text-sm text-green-700 dark:text-green-300 mt-2 space-y-1">
+          <li>□ Tested locally with <code>pnpm dev</code></li>
+          <li>□ Build passes with <code>pnpm build</code></li>
+          <li>□ No console errors</li>
+          <li>□ Follows existing code patterns</li>
+          <li>□ PR description explains the change</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- AI Workflow -->
+    <section id="ai-workflow">
+      <h2>8. Using AI Effectively</h2>
+
+      <p>I use AI (Claude, Cursor, GitHub Copilot) for ~80% of my coding. Here's how to make it work for you:</p>
+
+      <h3>Before You Start Coding</h3>
+      <ol>
+        <li><strong>Give context:</strong> "I'm contributing to a data science portfolio site built with Astro. Here's the project structure: [paste tree output]"</li>
+        <li><strong>Share examples:</strong> "Here's an existing component that does something similar: [paste code]"</li>
+        <li><strong>State your goal:</strong> "I want to create X that does Y"</li>
+      </ol>
+
+      <h3>While Coding</h3>
+      <ul>
+        <li><strong>Explain errors:</strong> Paste the full error message and the relevant code</li>
+        <li><strong>Ask for explanations:</strong> "Why does this code do X? I expected Y"</li>
+        <li><strong>Request alternatives:</strong> "This works but feels clunky. Is there a cleaner way?"</li>
+      </ul>
+
+      <h3>Prompts That Work Well</h3>
+      
+      <div class="not-prose my-4 border border-border p-4 bg-muted/30">
+        <p class="text-sm font-mono">"I'm looking at [file]. Explain what it does and how it connects to the rest of the app."</p>
+      </div>
+      
+      <div class="not-prose my-4 border border-border p-4 bg-muted/30">
+        <p class="text-sm font-mono">"I want to add [feature]. Here's a similar feature in the codebase: [paste code]. Help me create my version following the same patterns."</p>
+      </div>
+      
+      <div class="not-prose my-4 border border-border p-4 bg-muted/30">
+        <p class="text-sm font-mono">"I got this error: [paste error]. Here's the code that caused it: [paste code]. What's wrong and how do I fix it?"</p>
+      </div>
+      
+      <div class="not-prose my-4 border border-border p-4 bg-muted/30">
+        <p class="text-sm font-mono">"Review this code for bugs, edge cases, and improvements: [paste code]"</p>
+      </div>
+
+      <h3>Read More</h3>
+      <p>I wrote a detailed post about my AI workflow: <a href="/writing/how-i-ai">How I AI</a></p>
+    </section>
+
+    <!-- Footer -->
+    <section class="mt-12 border-t border-border pt-8">
+      <h2>Questions?</h2>
+      <p>Open a <a href="https://github.com/eeshansrivastava89/ds-apps-main/discussions">GitHub Discussion</a> or comment on an issue. I'm happy to help!</p>
+      
+      <p class="mt-6">
+        <a href="/contribute" class="text-muted-foreground hover:text-foreground">← Back to Contribute</a>
+      </p>
+    </section>
+
+  </div>
+</BaseLayout>
+
+<style>
+  /* Code block styling */
+  pre {
+    @apply rounded-lg border border-border bg-muted/50 p-4 overflow-x-auto text-sm;
+  }
+  
+  pre code {
+    @apply bg-transparent p-0;
+  }
+  
+  /* Inline code styling */
+  :not(pre) > code {
+    @apply bg-muted px-1.5 py-0.5 rounded text-sm;
+  }
+  
+  /* Link styling in prose */
+  .prose a {
+    @apply text-foreground underline hover:text-muted-foreground;
+  }
+  
+  /* Table styling */
+  .prose table {
+    @apply w-full;
+  }
+  
+  /* Section spacing */
+  section {
+    @apply mt-12;
+  }
+  
+  section:first-of-type {
+    @apply mt-8;
+  }
+</style>

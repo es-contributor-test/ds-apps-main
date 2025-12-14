@@ -1,0 +1,79 @@
+---
+/**
+ * AppLayout - Shared layout for app pages (inside packages/)
+ * 
+ * Provides:
+ * - SiteLayout wrapper (header/footer)
+ * - Nav bar with breadcrumbs + connection status + Project Docs link
+ * - App header with title and description from project yaml files
+ * 
+ * Usage:
+ * <AppLayout projectId="ab-simulator">
+ *   <!-- Your app content -->
+ * </AppLayout>
+ */
+import SiteLayout from './SiteLayout.astro'
+import ConnectionStatus from '../components/ConnectionStatus.astro'
+import Breadcrumbs from '../components/Breadcrumbs.astro'
+import type { Project } from '../lib/projects'
+import { getProjectById } from '../data/projectLoader'
+
+interface Props {
+  projectId: string
+  showConnectionStatus?: boolean
+  showDescription?: boolean  // Show long description below title
+}
+
+const { 
+  projectId, 
+  showConnectionStatus = true,
+  showDescription = true
+} = Astro.props
+
+// Get project data from individual yaml file
+const project = getProjectById(projectId)
+
+if (!project) {
+  throw new Error(`Project "${projectId}" not found in projects/ directory`)
+}
+
+const breadcrumbItems = [
+  { label: 'Home', href: '/' },
+  { label: 'Projects', href: '/projects' },
+  { label: project.name, href: project.hubUrl || `/projects/${projectId}` },
+  { label: 'Play' }
+]
+---
+
+<SiteLayout meta={{ title: project.name, description: project.shortDescription }}>
+  <div class='w-full space-y-8'>
+    <!-- Nav Bar -->
+    <div class='flex items-center justify-between border-b border-border pb-4'>
+      <div class='flex items-center gap-4'>
+        <Breadcrumbs items={breadcrumbItems} />
+        {showConnectionStatus && <ConnectionStatus />}
+      </div>
+      {project.hubUrl && (
+        <a
+          href={project.hubUrl}
+          class='inline-flex items-center gap-2 border border-sky-500 bg-sky-50 px-3 py-1.5 text-xs font-semibold text-sky-700 shadow-sm transition hover:-translate-y-0.5 hover:bg-sky-100 dark:bg-sky-500/10 dark:text-sky-400 dark:hover:bg-sky-500/20'
+        >
+          Project Docs
+        </a>
+      )}
+    </div>
+
+    <!-- App Header -->
+    <div class='space-y-2'>
+      <h1 class='text-3xl font-bold'>{project.name}</h1>
+      {showDescription && (
+        <p class='text-base text-muted-foreground'>
+          {project.description}
+        </p>
+      )}
+    </div>
+
+    <!-- App Content -->
+    <slot />
+  </div>
+</SiteLayout>

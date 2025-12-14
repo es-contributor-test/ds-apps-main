@@ -1,0 +1,187 @@
+---
+/**
+ * ProjectHubLayout - Reusable layout for project hub pages
+ * 
+ * Convention:
+ * - Hub page: /projects/{project-id}
+ * - App: /{project-id}/
+ * 
+ * Sections (in order):
+ * 1. Hero with status badge, description, tags, single CTA
+ * 2. Engagement stats (from v_project_engagement_stats)
+ * 3. Notebooks (if any)
+ * 4. Related posts
+ */
+import PageLayout from './BaseLayout.astro'
+import Section from '../components/Section.astro'
+import Breadcrumbs from '../../packages/shared/src/components/Breadcrumbs.astro'
+import { STATUS_CONFIG, type Project } from '../../packages/shared/src/lib/projects'
+import { getPostsByProject } from '../lib/posts'
+
+interface Props {
+  project: Project
+  ctaText?: string        // Default: "Try It →"
+}
+
+const { project, ctaText = 'Try It →' } = Astro.props
+
+// Get related posts
+const relatedPosts = await getPostsByProject(project.id)
+
+// Supabase config for client-side stats
+const supabaseUrl = import.meta.env.PUBLIC_SUPABASE_URL
+const supabaseKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY
+
+// Status badge config
+const statusConfig = STATUS_CONFIG[project.status]
+---
+
+<PageLayout meta={{ title: project.name, description: project.description }}>
+  <div class='flex w-full flex-col gap-y-10'>
+    <Breadcrumbs currentLabel={project.name} />
+    
+    <!-- Hero -->
+    <section class='border border-border bg-primary-foreground p-8 shadow-lg shadow-black/5'>
+      <div class='flex flex-col gap-6'>
+        <div class='space-y-3'>
+          <div class='flex items-center gap-3'>
+            <span class:list={[
+              'inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-sm font-semibold',
+              statusConfig.bgColor,
+              statusConfig.textColor
+            ]}>
+              <span class:list={['h-2 w-2 rounded-full', statusConfig.dotColor]}></span>
+              {statusConfig.label}
+            </span>
+          </div>
+          <h1 class='text-3xl font-bold text-foreground sm:text-4xl'>{project.name}</h1>
+          <p class='max-w-2xl text-lg text-muted-foreground'>{project.description}</p>
+        </div>
+        
+        <div class='flex flex-wrap gap-2'>
+          {project.tags.map((tag) => (
+            <span class='bg-muted px-3 py-1 text-sm font-medium text-muted-foreground'>
+              {tag.name}
+            </span>
+          ))}
+        </div>
+
+        {/* Engagement Stats - inline format */}
+        <div 
+          class='project-hub-stats text-sm text-muted-foreground'
+          data-supabase-url={supabaseUrl}
+          data-supabase-key={supabaseKey}
+          data-project-id={project.id}
+        >
+          <span class='stat-value font-semibold text-foreground tabular-nums' data-stat='total_views'>—</span> Total Views
+          <span class='mx-2'>|</span>
+          <span class='stat-value font-semibold text-foreground tabular-nums' data-stat='views_30d'>—</span> P30D Views
+          <span class='mx-2'>|</span>
+          Rank <span class='stat-value font-semibold text-foreground tabular-nums' data-stat='rank'>—</span>
+        </div>
+        
+        <a
+          href={project.url}
+          class='inline-flex w-fit items-center gap-2 bg-foreground px-6 py-3 text-base font-semibold text-background shadow-sm transition hover:-translate-y-0.5 hover:bg-foreground/90'
+        >
+          {ctaText}
+        </a>
+      </div>
+    </section>
+
+    <!-- Notebooks -->
+    {project.notebooks && project.notebooks.length > 0 && (
+      <Section title='Notebooks'>
+        <div class='space-y-3'>
+          {project.notebooks.map((notebook) => (
+            <a 
+              href={`/projects/${project.id}/analysis/${notebook.id}`}
+              class='flex items-center justify-between border border-border bg-background p-4 transition hover:border-foreground/30 hover:shadow-sm'
+            >
+              <div class='space-y-1'>
+                <h3 class='font-medium text-foreground'>{notebook.title}</h3>
+                <p class='text-sm text-muted-foreground'>{notebook.description}</p>
+              </div>
+              <span class='shrink-0 text-sm text-muted-foreground'>View →</span>
+            </a>
+          ))}
+        </div>
+      </Section>
+    )}
+
+    <!-- Related Content -->
+    {relatedPosts.length > 0 && (
+      <Section title='Related Content'>
+        <div class='space-y-3'>
+          {relatedPosts.map((post) => (
+            <a 
+              href={`/writing/${post.slug}`}
+              class='flex items-center justify-between border border-border bg-background p-4 transition hover:border-foreground/30 hover:shadow-sm'
+            >
+              <div class='space-y-1'>
+                <h3 class='font-medium text-foreground'>{post.data.title}</h3>
+                <p class='text-sm text-muted-foreground'>{post.data.description}</p>
+              </div>
+              <span class='shrink-0 text-sm text-muted-foreground'>Read →</span>
+            </a>
+          ))}
+        </div>
+      </Section>
+    )}
+
+  </div>
+</PageLayout>
+
+<script>
+  // Hydrate standard engagement stats
+  document.addEventListener('DOMContentLoaded', async () => {
+    const container = document.querySelector('.project-hub-stats')
+    if (!container) return
+    
+    const supabaseUrl = container.getAttribute('data-supabase-url')
+    const supabaseKey = container.getAttribute('data-supabase-key')
+    const projectId = container.getAttribute('data-project-id')
+    
+    if (!supabaseUrl || !supabaseKey || !projectId) {
+      console.debug('Supabase not configured, skipping stats')
+      return
+    }
+    
+    try {
+      const response = await fetch(
+        `${supabaseUrl}/rest/v1/rpc/project_engagement_stats`,
+        {
+          method: 'POST',
+          headers: {
+            'apikey': supabaseKey,
+            'Authorization': `Bearer ${supabaseKey}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ p_project_id: projectId })
+        }
+      )
+      
+      if (!response.ok) throw new Error('Failed to fetch stats')
+      
+      const rows = await response.json()
+      const data = rows[0]
+      if (!data) return
+      
+      const totalViewsEl = container.querySelector('[data-stat="total_views"]')
+      const views30dEl = container.querySelector('[data-stat="views_30d"]')
+      const rankEl = container.querySelector('[data-stat="rank"]')
+      
+      if (totalViewsEl && data.total_views !== undefined) {
+        totalViewsEl.textContent = data.total_views.toLocaleString()
+      }
+      if (views30dEl && data.views_30d !== undefined) {
+        views30dEl.textContent = data.views_30d.toLocaleString()
+      }
+      if (rankEl && data.rank !== undefined && data.total_projects !== undefined) {
+        rankEl.textContent = `#${data.rank} of ${data.total_projects}`
+      }
+    } catch (error) {
+      console.debug('Could not load project stats:', error)
+    }
+  })
+</script>
